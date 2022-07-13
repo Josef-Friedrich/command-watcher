@@ -1,0 +1,48 @@
+[[package]]
+name = "conf2levels"
+version = "0.3.0"
+description = "A configuration reader which reads values stored in two key levels. The first key level is named “section” and the second level “key”."
+category = "main"
+optional = false
+python-versions = ">=3.8,<4.0"
+
+[package.dependencies]
+type-extensions = ">=0.1.2,<0.2.0"
+
+[[package]]
+name = "termcolor"
+version = "1.1.0"
+description = "ANSII Color formatting for output in terminal."
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "type-extensions"
+version = "0.1.2"
+description = "Importable mixin methods for Python."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+testing = ["pytest", "pytest-cov"]
+
+[[package]]
+name = "types-termcolor"
+version = "1.1.5"
+description = "Typing stubs for termcolor"
+category = "main"
+optional = false
+python-versions = "*"
+
+[metadata]
+lock-version = "1.1"
+python-versions = "^3.8"
+content-hash = "151a545ff452c00b81ad915d4c9f3e4d10d4ec5674c40ab7151c5b6a8eae0366"
+
+[metadata.files]
+conf2levels = []
+termcolor = []
+type-extensions = []
+types-termcolor = []
