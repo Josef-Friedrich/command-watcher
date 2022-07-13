@@ -1,6 +1,6 @@
 [[package]]
 name = "conf2levels"
-version = "0.3.0"
+version = "0.4.0"
 description = "A configuration reader which reads values stored in two key levels. The first key level is named “section” and the second level “key”."
 category = "main"
 optional = false
@@ -39,7 +39,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "151a545ff452c00b81ad915d4c9f3e4d10d4ec5674c40ab7151c5b6a8eae0366"
+content-hash = "4c0acf9f07e1252ba2bd9419d9785678618cf9fabfac0b37c381c2475525a6b8"
 
 [metadata.files]
 conf2levels = []

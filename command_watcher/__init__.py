@@ -34,12 +34,12 @@ from logging.handlers import BufferingHandler
 from typing import (IO, Any, Dict, List, Literal, Optional, Sequence, Tuple,
                     TypedDict, Union, cast)
 
+import termcolor
+from conf2levels import ClassInterface, ConfigReader, Spec
 from typing_extensions import Unpack
 
 from . import capturing, icinga
-import termcolor
-from conf2levels import ClassInterface, ConfigReader, Spec
-from .send_email import send_email
+from .email import send_email
 
 HOSTNAME = socket.gethostname()
 USERNAME = pwd.getpwuid(os.getuid()).pw_name
