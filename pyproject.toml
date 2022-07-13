@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "command_watcher"
+version = "0.1.0"
+description = "Module to watch the execution of shell scripts. Both streams (`stdout` and `stderr`) are captured.."
+authors = ["Josef Friedrich <josef@friedrich.rocks>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/Josef-Friedrich/command-watcher"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: MIT License",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
