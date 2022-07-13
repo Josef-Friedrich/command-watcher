@@ -5,7 +5,8 @@ from unittest import mock
 from jflib.capturing import Capturing
 
 import command_watcher
-from command_watcher import HOSTNAME, USERNAME, Message, Watch
+from command_watcher import Message, Watch
+from command_watcher.report import HOSTNAME, USERNAME
 
 DIR_FILES = os.path.join(os.path.dirname(__file__), 'files')
 CONF = os.path.join(DIR_FILES, 'conf.ini')
@@ -236,7 +237,7 @@ class TestClassEmailChannel(unittest.TestCase):
 
     def test_method_report(self) -> None:
         message = Message(status=0, service_name='test', body='body')
-        with mock.patch('command_watcher.send_email') as send_email:
+        with mock.patch('command_watcher.report.send_email') as send_email:
             self.email.report(message)
         send_email.assert_called_with(
             body='Host: {}\nUser: {}\nService name: test\n\nbody'
@@ -251,7 +252,7 @@ class TestClassEmailChannel(unittest.TestCase):
 
     def test_method_report_critical(self) -> None:
         message = Message(status=2, service_name='test', body='body')
-        with mock.patch('command_watcher.send_email') as send_email:
+        with mock.patch('command_watcher.report.send_email') as send_email:
             self.email.report(message)
         send_email.assert_called_with(
             body='Host: {}\nUser: {}\nService name: test\n\nbody'
@@ -345,7 +346,9 @@ class TestClassIcingaChannel(unittest.TestCase):
         self.assert_called_with(send_passive_check, 0,
                                 'MY_SERVICE OK', 'perf_1=1 perf_2=lol')
 
-    def test_method_send_passive_check_without_custom_output_kwargs(self) -> None:
+    def test_method_send_passive_check_without_custom_output_kwargs(
+        self
+    ) -> None:
         send_passive_check = self.send_passive_check(
             status=0,
             performance_data={'perf_1': 1, 'perf_2': 'lol'}
@@ -585,7 +588,7 @@ class TestClassWatch(unittest.TestCase):
         watch = Watch(config_file=CONF, service_name='my_service')
         with mock.patch('command_watcher.icinga.send_passive_check') as \
                 send_passive_check, \
-                mock.patch('command_watcher.send_email'):
+                mock.patch('command_watcher.report.send_email'):
             watch.report(
                 status=0,
                 custom_message='My message',

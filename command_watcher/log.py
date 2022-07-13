@@ -1,10 +1,9 @@
 import logging
 import sys
 import time
-import typing
 import uuid
 from logging.handlers import BufferingHandler
-from typing import Any, List, Optional, cast
+from typing import Any, List, Optional, Tuple, cast
 
 import termcolor
 
@@ -38,7 +37,7 @@ class LoggingHandler(BufferingHandler):
         self._master_logger = master_logger
 
     @staticmethod
-    def _print(record: logging.LogRecord):
+    def _print(record: logging.LogRecord) -> None:
         """
         :param logging.LogRecord record: A record object.
         """
@@ -97,7 +96,7 @@ class LoggingHandler(BufferingHandler):
             termcolor.colored(record.msg, color, attrs=normal),
         ), file=stream)
 
-    def emit(self, record: logging.LogRecord):
+    def emit(self, record: logging.LogRecord) -> None:
         """
         :param record: A record object.
         """
@@ -110,7 +109,7 @@ class LoggingHandler(BufferingHandler):
             self.flush()
 
     @property
-    def stdout(self):
+    def stdout(self) -> str:
         messages: List[str] = []
         for record in self.buffer:
             if record.levelname == 'STDOUT':
@@ -118,7 +117,7 @@ class LoggingHandler(BufferingHandler):
         return '\n'.join(messages)
 
     @property
-    def stderr(self):
+    def stderr(self) -> str:
         messages: List[str] = []
         for record in self.buffer:
             if record.levelname == 'STDERR':
@@ -126,7 +125,7 @@ class LoggingHandler(BufferingHandler):
         return '\n'.join(messages)
 
     @property
-    def all_records(self):
+    def all_records(self) -> str:
         """All log messages joined by line breaks."""
         messages: List[str] = []
         for record in self.buffer:
@@ -140,7 +139,8 @@ class ExtendedLogger(logging.Logger):
     def stderr(self, line: object, *args: Any, **kws: Any) -> None: ...
 
 
-def _log_stdout(self: ExtendedLogger, message: object, *args: Any, **kws: Any):
+def _log_stdout(self: ExtendedLogger, message: object, *args: Any,
+                **kws: Any) -> None:
     # Yes, logger takes its '*args' as 'args'.
     self._log(STDOUT, message, args, **kws)
 
@@ -151,7 +151,8 @@ extendedLogger: ExtendedLogger = cast(ExtendedLogger, logging.Logger)
 extendedLogger.stdout = _log_stdout  # type: ignore
 
 
-def _log_stderr(self: ExtendedLogger, message: object, *args: Any, **kws: Any):
+def _log_stderr(self: ExtendedLogger, message: object, *args: Any,
+                **kws: Any) -> None:
     # Yes, logger takes its '*args' as 'args'.
     self._log(STDERR, message, args, **kws)
 
@@ -160,7 +161,7 @@ logging.Logger.stderr = _log_stderr  # type: ignore
 
 
 def setup_logging(master_logger: Optional[logging.Logger] = None) -> \
-        typing.Tuple[ExtendedLogger, LoggingHandler]:
+        Tuple[ExtendedLogger, LoggingHandler]:
     """Setup a fresh logger for each watch action.
 
     :param master_logger: Forward all log messages to a master logger."""
