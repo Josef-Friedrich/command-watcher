@@ -1,16 +1,6 @@
 """
 Module to watch the execution of shell scripts. Both streams (`stdout` and
 `stderr`) are captured.
-
-.. code:: python
-
-    watch = Watch()
-    watch.log.critical(msg)
-    watch.log.error(msg)
-    watch.log.warning(msg)
-    watch.log.info(msg)
-    watch.log.debug(msg)
-    watch.run(['rsync', '-av', '/home', '/backup'])
 """
 
 from __future__ import annotations
