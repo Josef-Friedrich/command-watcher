@@ -7,7 +7,7 @@ from command_watcher import HOSTNAME, USERNAME, Message, Watch
 from jflib.capturing import Capturing
 
 DIR_FILES = os.path.join(os.path.dirname(__file__), 'files')
-CONF = os.path.join(DIR_FILES, 'command_watcher', 'conf.ini')
+CONF = os.path.join(DIR_FILES, 'conf.ini')
 FROM_ADDR = '{0} <{1}@{0}>'.format(HOSTNAME, USERNAME)
 
 
@@ -169,16 +169,16 @@ class TestClassMessage(unittest.TestCase):
         self.assertEqual(self.message.performance_data, 'value1=1 value2=2')
 
     def test_property_prefix(self):
-        self.assertEqual(self.message.prefix, '[command_watcher]:')
+        self.assertEqual(self.message.prefix, '[cwatcher]:')
 
     def test_property_message(self):
         self.assertEqual(self.message.message,
-                         '[command_watcher]: SERVICE OK - Everything ok')
+                         '[cwatcher]: SERVICE OK - Everything ok')
 
     def test_property_message_monitoring(self):
         self.assertEqual(
             self.message.message_monitoring,
-            '[command_watcher]: SERVICE OK - Everything ok | value1=1 value2=2'
+            '[cwatcher]: SERVICE OK - Everything ok | value1=1 value2=2'
         )
 
     def test_property_body(self):
@@ -235,7 +235,7 @@ class TestClassEmailChannel(unittest.TestCase):
 
     def test_method_report(self):
         message = Message(status=0, service_name='test', body='body')
-        with mock.patch('jflib.command_watcher.send_email') as send_email:
+        with mock.patch('command_watcher.send_email') as send_email:
             self.email.report(message)
         send_email.assert_called_with(
             body='Host: {}\nUser: {}\nService name: test\n\nbody'
@@ -244,13 +244,13 @@ class TestClassEmailChannel(unittest.TestCase):
             smtp_login='jf',
             smtp_password='123',
             smtp_server='mail.example.com:587',
-            subject='[command_watcher]: TEST OK',
+            subject='[cwatcher]: TEST OK',
             to_addr='logs@example.com',
         )
 
     def test_method_report_critical(self):
         message = Message(status=2, service_name='test', body='body')
-        with mock.patch('jflib.command_watcher.send_email') as send_email:
+        with mock.patch('command_watcher.send_email') as send_email:
             self.email.report(message)
         send_email.assert_called_with(
             body='Host: {}\nUser: {}\nService name: test\n\nbody'
@@ -259,7 +259,7 @@ class TestClassEmailChannel(unittest.TestCase):
             smtp_login='jf',
             smtp_password='123',
             smtp_server='mail.example.com:587',
-            subject='[command_watcher]: TEST CRITICAL',
+            subject='[cwatcher]: TEST CRITICAL',
             to_addr='critical@example.com',
         )
 
@@ -290,8 +290,8 @@ class TestClassIcingaChannel(unittest.TestCase):
 
     def send_passive_check(self, **kwargs):
         message = Message(service_name='my_service', prefix='',
-                                   **kwargs)
-        with mock.patch('jflib.command_watcher.icinga.send_passive_check') as \
+                          **kwargs)
+        with mock.patch('command_watcher.icinga.send_passive_check') as \
                 send_passive_check:
             self.icinga.report(message)
         return send_passive_check
@@ -361,7 +361,7 @@ class TestClassBeepChannel(unittest.TestCase):
 
     def report(self, status: int):
         message = Message(service_name='my_service', prefix='',
-                                   status=status)
+                          status=status)
         with mock.patch('subprocess.run') as subprocess_run:
             self.beep.report(message)
         return subprocess_run
@@ -465,7 +465,7 @@ class TestClassWatch(unittest.TestCase):
 
     def test_method_run_output_stderr(self):
         watch = Watch(config_file=CONF, service_name='test',
-                               raise_exceptions=False, )
+                      raise_exceptions=False, )
         with Capturing(stream='stderr') as output:
             process = watch.run(self.cmd_stderr)
         self.assertEqual(process.subprocess.returncode, 1)
@@ -477,7 +477,7 @@ class TestClassWatch(unittest.TestCase):
 
     def test_method_run_multiple(self):
         watch = Watch(config_file=CONF, service_name='test',
-                               raise_exceptions=False)
+                      raise_exceptions=False)
         watch.run(self.cmd_stdout)
         watch.run(self.cmd_stderr)
         self.assertEqual(len(watch._log_handler.buffer), 9)
@@ -485,14 +485,14 @@ class TestClassWatch(unittest.TestCase):
 
     def test_method_run_log_true(self):
         watch = Watch(config_file=CONF, service_name='test',
-                               raise_exceptions=False)
+                      raise_exceptions=False)
         process = watch.run(self.cmd_stdout, log=True)
         self.assertEqual(watch.stdout, 'One line to stdout!')
         self.assertEqual(process.stdout, 'One line to stdout!')
 
     def test_method_run_log_false(self):
         watch = Watch(config_file=CONF, service_name='test',
-                               raise_exceptions=False)
+                      raise_exceptions=False)
         process = watch.run(self.cmd_stdout, log=False)
         self.assertEqual(watch.stdout, '')
         self.assertEqual(process.stdout, 'One line to stdout!')
@@ -544,7 +544,7 @@ class TestClassWatch(unittest.TestCase):
         watch.log.info('info')
         watch.run('ls')
 
-        with mock.patch('jflib.command_watcher.icinga.send_passive_check'), \
+        with mock.patch('command_watcher.icinga.send_passive_check'), \
                 mock.patch('smtplib.SMTP') as SMTP:
             watch.report(
                 status=0,
@@ -569,7 +569,7 @@ class TestClassWatch(unittest.TestCase):
 
     def test_method_report_channel_email_critical(self):
         watch = Watch(config_file=CONF, service_name='my_service')
-        with mock.patch('jflib.command_watcher.icinga.send_passive_check'), \
+        with mock.patch('command_watcher.icinga.send_passive_check'), \
                 mock.patch('smtplib.SMTP') as SMTP:
             watch.report(status=2)
         server = SMTP.return_value
@@ -582,9 +582,9 @@ class TestClassWatch(unittest.TestCase):
 
     def test_method_report_channel_nsca(self):
         watch = Watch(config_file=CONF, service_name='my_service')
-        with mock.patch('jflib.command_watcher.icinga.send_passive_check') as \
+        with mock.patch('command_watcher.icinga.send_passive_check') as \
                 send_passive_check, \
-                mock.patch('jflib.command_watcher.send_email'):
+                mock.patch('command_watcher.send_email'):
             watch.report(
                 status=0,
                 custom_message='My message',
@@ -618,19 +618,19 @@ class TestClassWatch(unittest.TestCase):
 
     def test_exception(self):
         watch = Watch(config_file=CONF, service_name='test',
-                               report_channels=[])
+                      report_channels=[])
         with self.assertRaises(command_watcher.CommandWatcherError):
             watch.run(self.cmd_stderr)
 
     def test_ignore_exceptions(self):
         watch = Watch(config_file=CONF, service_name='test',
-                               report_channels=[])
+                      report_channels=[])
         process = watch.run(self.cmd_stderr, ignore_exceptions=[1])
         self.assertEqual(process.subprocess.returncode, 1)
 
     def test_ignore_exceptions_raise(self):
         watch = Watch(config_file=CONF, service_name='test',
-                               report_channels=[])
+                      report_channels=[])
         with self.assertRaises(command_watcher.CommandWatcherError):
             watch.run(os.path.join(DIR_FILES, 'exit-2.sh'),
                       ignore_exceptions=[1])
@@ -640,7 +640,7 @@ class TestClassWatchMethodFinalReport(unittest.TestCase):
 
     def final_report(self, **data):
         watch = Watch(config_file=CONF, service_name='test',
-                               report_channels=[])
+                      report_channels=[])
         watch._timer.result = mock.Mock()
         watch._timer.result.return_value = '11.123s'
         return watch.final_report(**data)
@@ -648,11 +648,11 @@ class TestClassWatchMethodFinalReport(unittest.TestCase):
     def test_without_arguments(self):
         message = self.final_report()
         self.assertEqual(message.status, 0)
-        self.assertEqual(message.message, '[command_watcher]: TEST OK')
+        self.assertEqual(message.message, '[cwatcher]: TEST OK')
         self.assertEqual(message.message_monitoring,
-                         '[command_watcher]: TEST OK | execution_time=11.123s')
+                         '[cwatcher]: TEST OK | execution_time=11.123s')
 
     def test_with_arguments(self):
         message = self.final_report(status=1, custom_message='test')
         self.assertEqual(message.status, 1)
-        self.assertEqual(message.message, '[command_watcher]: TEST WARNING - test')
+        self.assertEqual(message.message, '[cwatcher]: TEST WARNING - test')

@@ -37,8 +37,9 @@ from typing import (IO, Any, Dict, List, Literal, Optional, Sequence, Tuple,
 import termcolor
 from conf2levels import ClassInterface, ConfigReader, Spec
 from typing_extensions import Unpack
+from jflib import capturing
 
-from . import capturing, icinga
+from . import icinga
 from .email import send_email
 
 HOSTNAME = socket.gethostname()
