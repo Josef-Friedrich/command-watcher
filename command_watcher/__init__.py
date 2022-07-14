@@ -11,6 +11,7 @@ import shutil
 import subprocess
 import threading
 import time
+from importlib import metadata
 from typing import (IO, Any, Dict, List, Optional, Sequence, Tuple, TypedDict,
                     Union)
 
@@ -22,8 +23,6 @@ from .log import ExtendedLogger, LoggingHandler, setup_logging
 from .report import (HOSTNAME, BaseChannel, BeepChannel, EmailChannel,
                      IcingaChannel, Message, MessageParams,
                      MinimalMessageParams, Status, reporter)
-
-from importlib import metadata
 
 __version__: str = metadata.version('command_watcher')
 

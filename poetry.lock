@@ -69,6 +69,17 @@ docs = ["furo (>=2021.8.17b43)", "sphinx (>=4.1)", "sphinx-autodoc-typehints (>=
 testing = ["covdefaults (>=1.2.0)", "coverage (>=4)", "pytest (>=4)", "pytest-cov", "pytest-timeout (>=1.4.2)"]
 
 [[package]]
+name = "icinga2apic"
+version = "0.7.5"
+description = "Python Icinga 2 API - Continued"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+requests = "*"
+
+[[package]]
 name = "idna"
 version = "3.3"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -294,7 +305,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "2d28620585aba9a6398696a934761ccaf0416adbfbaf2b0c0a1be4b90a4abc66"
+content-hash = "aade53c378a979528fba56668bcb711dc732f8aa6013b0313900ce679e598a92"
 
 [metadata.files]
 autopep8 = []
@@ -304,6 +315,7 @@ colorama = []
 conf2levels = []
 distlib = []
 filelock = []
+icinga2apic = []
 idna = []
 jflib = []
 packaging = []

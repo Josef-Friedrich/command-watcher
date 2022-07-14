@@ -1,8 +1,9 @@
-import json
 from typing import Optional
 
-import requests
 import urllib3
+from icinga2apic import Client
+from icinga2apic.actions import Status
+from icinga2apic.base import Json
 
 urllib3.disable_warnings()  # type: ignore
 
@@ -20,35 +21,18 @@ States = {
 }
 
 
-def send_passive_check(url: str, user: str, password: str, status: int,
+def send_passive_check(url: str, user: str, password: str, status: Status,
                        host_name: str, service_name: str,
                        text_output: str,
-                       performance_data: Optional[str] = None):
+                       performance_data: Optional[str] = None
+                       ) -> Json:
     """
     https://icinga.com/docs/icinga-2/latest/doc/12-icinga2-api/#process-check-result
-
-    [icinga]
-    url
-    user
-    password
     """
-    request_url = '{}/v1/actions/process-check-result'.format(url)
-    headers = {
-        'Accept': 'application/json',
-        'X-HTTP-Method-Override': 'POST'
-    }
-    data = {
-        'type': 'Service',
-        'filter': 'host.name=="{}" && service.name=="{}"'.format(host_name,
-                                                                 service_name),
-        'exit_status': status,
-        'plugin_output': text_output,
-    }
-
-    if performance_data:
-        data['performance_data'] = performance_data
-
-    return requests.post(request_url,
-                         headers=headers,
-                         auth=(user, password),
-                         data=json.dumps(data), verify=False)
+    client = Client(url=url,
+                    username=user, password=password)
+    return client.actions.process_check_result(
+        object_type='Service',
+        name='{}!{}'.format(host_name, service_name),
+        exit_status=status,
+        plugin_output=text_output, performance_data=performance_data)
