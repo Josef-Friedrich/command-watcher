@@ -226,9 +226,28 @@ python-versions = "*"
 testing = ["pytest", "pytest-cov"]
 
 [[package]]
+name = "types-requests"
+version = "2.28.1"
+description = "Typing stubs for requests"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+types-urllib3 = "<1.27"
+
+[[package]]
 name = "types-termcolor"
 version = "1.1.5"
 description = "Typing stubs for termcolor"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "types-urllib3"
+version = "1.26.16"
+description = "Typing stubs for urllib3"
 category = "main"
 optional = false
 python-versions = "*"
@@ -275,7 +294,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "0ce711ea8c4f6ff160938e2dfc72ccfd1ee4f5a392c5f1d17cf3141131be2e19"
+content-hash = "2d28620585aba9a6398696a934761ccaf0416adbfbaf2b0c0a1be4b90a4abc66"
 
 [metadata.files]
 autopep8 = []
@@ -299,7 +318,9 @@ termcolor = []
 toml = []
 tox = []
 type-extensions = []
+types-requests = []
 types-termcolor = []
+types-urllib3 = []
 typing-extensions = []
 urllib3 = []
 virtualenv = []

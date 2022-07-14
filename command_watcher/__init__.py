@@ -38,7 +38,7 @@ class CommandWatcherError(Exception):
 class Timer:
     """Measure the execution time of a command run."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.stop = 0
         """"The time when the timer stops. (UNIX timestamp)"""
 
@@ -48,12 +48,11 @@ class Timer:
         self.interval = 0
         """The time interval between start and stop."""
 
-    def result(self):
+    def result(self) -> str:
         """
         Measure the time intervale
 
-        :return: A formatted string displaying the result.
-        :rtype: str"""
+        :return: A formatted string displaying the result."""
         self.stop = time.time()
         self.interval = self.stop - self.start
         return '{:.3f}s'.format(self.interval)
@@ -251,7 +250,8 @@ class Process:
         """The count of lines of the current `stderr`."""
         return len(self.stderr.splitlines())
 
-    def _stdout_stderr_reader(self, pipe: IO[bytes], stream: capturing.Stream):
+    def _stdout_stderr_reader(self, pipe: IO[bytes],
+                              stream: capturing.Stream) -> None:
         """
         :param object pipe: `process.stdout` or `process.stdout`
         """
@@ -262,7 +262,8 @@ class Process:
         finally:
             self._queue.put(None)
 
-    def _start_thread(self, pipe: Optional[IO[str]], stream: capturing.Stream):
+    def _start_thread(self, pipe: Optional[IO[str]],
+                      stream: capturing.Stream) -> None:
         """
         :param object pipe: `process.stdout` or `process.stdout`
         """

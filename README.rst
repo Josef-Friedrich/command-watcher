@@ -38,3 +38,28 @@ and `stderr`) are captured.
             'all_packages': all_packages.line_count_stdout,
         },
     )
+
+.. code-block:: ini
+
+    [email]
+    subject_prefix = [cwatcher]
+    from_addr =
+    to_addr = logs@example.com
+    to_addr_critical = critical@example.com
+    smtp_login = mailer
+    smtp_password = 1234
+    smtp_server = mail.example.com:587
+
+    [nsca]
+    remote_host = 1.2.3.4
+    password = asdf1234
+    encryption_method = 8
+    ; port = 5667
+
+    [icinga]
+    url = https://icinga.example.com:5665
+    user = user
+    password = 1234
+
+    [beep]
+    activated = True
