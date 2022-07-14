@@ -49,17 +49,6 @@ python-versions = ">=3.8,<4.0"
 type-extensions = ">=0.1.2,<0.2.0"
 
 [[package]]
-name = "coverage"
-version = "6.4.2"
-description = "Code coverage measurement for Python"
-category = "main"
-optional = false
-python-versions = ">=3.7"
-
-[package.extras]
-toml = ["tomli"]
-
-[[package]]
 name = "distlib"
 version = "0.3.4"
 description = "Distribution utilities"
@@ -98,22 +87,6 @@ python-versions = ">=3.8,<4.0"
 [package.dependencies]
 requests = "2.28.1"
 typing-extensions = "4.3.0"
-
-[[package]]
-name = "nose2"
-version = "0.11.0"
-description = "unittest2 with plugins, the succesor to nose"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-coverage = ">=4.4.1"
-six = ">=1.7"
-
-[package.extras]
-coverage_plugin = ["coverage (>=4.4.1)"]
-dev = ["Sphinx (>=1.6.5)", "sphinx-rtd-theme", "mock", "coverage", "sphinx-issues"]
 
 [[package]]
 name = "packaging"
@@ -199,7 +172,7 @@ use_chardet_on_py3 = ["chardet (>=3.0.2,<6)"]
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 
@@ -302,7 +275,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "9854639ae734f9cb47116ac35e930bf7e0059b4cc7e00e19fb6ccb10bebed515"
+content-hash = "0ce711ea8c4f6ff160938e2dfc72ccfd1ee4f5a392c5f1d17cf3141131be2e19"
 
 [metadata.files]
 autopep8 = []
@@ -310,12 +283,10 @@ certifi = []
 charset-normalizer = []
 colorama = []
 conf2levels = []
-coverage = []
 distlib = []
 filelock = []
 idna = []
 jflib = []
-nose2 = []
 packaging = []
 platformdirs = []
 pluggy = []
