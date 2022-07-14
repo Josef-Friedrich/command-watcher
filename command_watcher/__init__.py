@@ -23,6 +23,10 @@ from .report import (HOSTNAME, BaseChannel, BeepChannel, EmailChannel,
                      IcingaChannel, Message, MessageParams,
                      MinimalMessageParams, Status, reporter)
 
+from importlib import metadata
+
+__version__: str = metadata.version('command_watcher')
+
 
 class CommandWatcherError(Exception):
     """Exception raised by this module."""
