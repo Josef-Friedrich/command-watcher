@@ -8,7 +8,7 @@ import command_watcher
 class TestLogging(unittest.TestCase):
 
     def setUp(self) -> None:
-        logger, handler = command_watcher.setup_logging()
+        logger, handler = command_watcher.log.setup_logging()
         self.logger = logger
         self.handler = handler
 
@@ -53,7 +53,7 @@ class TestLogging(unittest.TestCase):
 class TestColorizedPrint(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.logger, _ = command_watcher.setup_logging()
+        self.logger, _ = command_watcher.log.setup_logging()
 
     def test_critical(self) -> None:
         with Capturing(stream='stderr') as output:
