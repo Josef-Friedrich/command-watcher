@@ -18,7 +18,7 @@ jflib = "^1.0.0"
 termcolor = "^1.1.0"
 types-requests = "^2.28.1"
 types-termcolor = "^1.1.5"
-icinga2apic = { git = "https://github.com/jf-forks/icinga2apic.git", branch = "master", rev = "d5f12033894c33d434fcc8e1aa6db8a2b80b549d" }
+icinga2apic = { git = "https://github.com/jf-forks/icinga2apic.git", branch = "master", rev = "7a842be" }
 
 [tool.poetry.group.dev.dependencies]
 tox = "^3.25.1"

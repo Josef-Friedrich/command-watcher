@@ -83,8 +83,8 @@ requests = "*"
 [package.source]
 type = "git"
 url = "https://github.com/jf-forks/icinga2apic.git"
-reference = "9645cda"
-resolved_reference = "9645cda9eb3daa59b4e062825643f870aa4328e9"
+reference = "7a842be"
+resolved_reference = "7a842bedf6cc89e9032b341a35523f6a87422ab3"
 
 [[package]]
 name = "idna"
@@ -312,7 +312,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "d75823aff7a9508c800011009c37312f4c769576923142ca45fd2e0e82b73997"
+content-hash = "4471028c72f702f3e34c73d44ef55e25415e9ecc75f7e050d1e3172072208510"
 
 [metadata.files]
 autopep8 = []
