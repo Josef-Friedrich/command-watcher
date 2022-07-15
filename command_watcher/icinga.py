@@ -1,9 +1,7 @@
-from typing import Optional
+from typing import Literal, Optional
 
 import urllib3
 from icinga2apic.client import Client
-from icinga2apic.base import Json as Json
-from icinga2apic.actions import ExitStatus as ExitStatus
 
 urllib3.disable_warnings()  # type: ignore
 
@@ -21,11 +19,12 @@ States = {
 }
 
 
-def send_passive_check(url: str, user: str, password: str, status: ExitStatus,
+def send_passive_check(url: str, user: str, password: str,
+                       status: Literal[0, 1, 2, 3],
                        host_name: str, service_name: str,
                        text_output: str,
                        performance_data: Optional[str] = None
-                       ) -> Json:
+                       ):
     """
     https://icinga.com/docs/icinga-2/latest/doc/12-icinga2-api/#process-check-result
     """
