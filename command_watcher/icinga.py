@@ -1,9 +1,9 @@
 from typing import Optional
 
 import urllib3
-from icinga2apic import Client
-from icinga2apic.actions import Status
-from icinga2apic.base import Json
+from icinga2apic.client import Client
+from icinga2apic.base import Json as Json
+from icinga2apic.actions import ExitStatus as ExitStatus
 
 urllib3.disable_warnings()  # type: ignore
 
@@ -21,7 +21,7 @@ States = {
 }
 
 
-def send_passive_check(url: str, user: str, password: str, status: Status,
+def send_passive_check(url: str, user: str, password: str, status: ExitStatus,
                        host_name: str, service_name: str,
                        text_output: str,
                        performance_data: Optional[str] = None
