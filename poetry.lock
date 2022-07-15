@@ -50,7 +50,7 @@ type-extensions = ">=0.1.2,<0.2.0"
 
 [[package]]
 name = "distlib"
-version = "0.3.4"
+version = "0.3.5"
 description = "Distribution utilities"
 category = "dev"
 optional = false
@@ -75,9 +75,16 @@ description = "Python Icinga 2 API - Continued"
 category = "main"
 optional = false
 python-versions = "*"
+develop = false
 
 [package.dependencies]
 requests = "*"
+
+[package.source]
+type = "git"
+url = "https://github.com/jf-forks/icinga2apic.git"
+reference = "9645cda"
+resolved_reference = "9645cda9eb3daa59b4e062825643f870aa4328e9"
 
 [[package]]
 name = "idna"
@@ -305,7 +312,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "aade53c378a979528fba56668bcb711dc732f8aa6013b0313900ce679e598a92"
+content-hash = "d75823aff7a9508c800011009c37312f4c769576923142ca45fd2e0e82b73997"
 
 [metadata.files]
 autopep8 = []
