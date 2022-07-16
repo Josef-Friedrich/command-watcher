@@ -5,7 +5,7 @@ from unittest import mock
 from stdout_stderr_capturing import Capturing
 
 import command_watcher
-from command_watcher import Watch
+from command_watcher import Watch, Args
 from command_watcher.report import HOSTNAME, USERNAME
 
 from .helper import CONF, DIR_FILES
@@ -17,8 +17,8 @@ class TestClassProcess(unittest.TestCase):
         self.cmd_stderr = os.path.join(DIR_FILES, 'stderr.sh')
         self.cmd_stdout = os.path.join(DIR_FILES, 'stdout.sh')
 
-    def launch_process(self, *args, **kwargs):
-        return command_watcher.Process(*args, **kwargs)
+    def launch_process(self, args: Args):
+        return command_watcher.Process(args)
 
     def test_attribute_args(self) -> None:
         process = self.launch_process('ls -l')
