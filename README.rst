@@ -1,3 +1,7 @@
+.. image:: https://github.com/Josef-Friedrich/command-watcher/actions/workflows/tests.yml/badge.svg
+    :target: https://github.com/Josef-Friedrich/command-watcher/actions/workflows/tests.yml
+    :alt: Tests
+
 command_watcher
 ===============
 
