@@ -1,6 +1,6 @@
 import unittest
 
-from jflib.capturing import Capturing
+from stdout_stderr_capturing import Capturing
 
 import command_watcher
 
