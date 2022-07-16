@@ -88,18 +88,6 @@ optional = false
 python-versions = ">=3.5"
 
 [[package]]
-name = "jflib"
-version = "1.0.0"
-description = "A collection of my Python library snippets. Maybe they are useful for someone else."
-category = "main"
-optional = false
-python-versions = ">=3.8,<4.0"
-
-[package.dependencies]
-requests = "2.28.1"
-typing-extensions = "4.3.0"
-
-[[package]]
 name = "packaging"
 version = "21.3"
 description = "Core utilities for Python packages"
@@ -264,14 +252,6 @@ optional = false
 python-versions = "*"
 
 [[package]]
-name = "typing-extensions"
-version = "4.3.0"
-description = "Backported and Experimental Type Hints for Python 3.7+"
-category = "main"
-optional = false
-python-versions = ">=3.7"
-
-[[package]]
 name = "urllib3"
 version = "1.26.10"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
@@ -305,7 +285,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "6762a736f4469aa4a5374cef1a8a7c342c2560f1ac8f9045ef0de25645608d26"
+content-hash = "80476020c5ae85807929c57bc53bd6d76778995766e3fcad68a7daec6658d6bd"
 
 [metadata.files]
 autopep8 = []
@@ -317,7 +297,6 @@ distlib = []
 filelock = []
 icinga2apic = []
 idna = []
-jflib = []
 packaging = []
 platformdirs = []
 pluggy = []
@@ -333,6 +312,5 @@ type-extensions = []
 types-requests = []
 types-termcolor = []
 types-urllib3 = []
-typing-extensions = []
 urllib3 = []
 virtualenv = []

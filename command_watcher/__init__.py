@@ -12,11 +12,10 @@ import subprocess
 import threading
 import time
 from importlib import metadata
-from typing import (IO, Any, Dict, List, Optional, Sequence, Tuple, TypedDict,
-                    Union)
+from typing import (IO, Any, Dict, List, Literal, Optional, Sequence, Tuple,
+                    TypedDict, Union)
 
 from conf2levels import ClassInterface, ConfigReader, Spec
-from jflib import capturing
 from typing_extensions import Unpack
 
 from .log import ExtendedLogger, LoggingHandler, setup_logging
@@ -25,6 +24,8 @@ from .report import (HOSTNAME, BaseChannel, BeepChannel, EmailChannel,
                      MinimalMessageParams, Status, reporter)
 
 __version__: str = metadata.version('command_watcher')
+
+Stream = Literal['stdout', 'stderr']
 
 
 class CommandWatcherError(Exception):
@@ -176,7 +177,7 @@ class Process:
     args: Args
     """Process arguments in various types."""
 
-    _queue: 'queue.Queue[Optional[Tuple[bytes, capturing.Stream]]]'
+    _queue: 'queue.Queue[Optional[Tuple[bytes, Stream]]]'
 
     log: ExtendedLogger
     """A ready to go and configured logger."""
@@ -254,7 +255,7 @@ class Process:
         return len(self.stderr.splitlines())
 
     def _stdout_stderr_reader(self, pipe: IO[bytes],
-                              stream: capturing.Stream) -> None:
+                              stream: Stream) -> None:
         """
         :param object pipe: `process.stdout` or `process.stdout`
         """
@@ -266,7 +267,7 @@ class Process:
             self._queue.put(None)
 
     def _start_thread(self, pipe: Optional[IO[str]],
-                      stream: capturing.Stream) -> None:
+                      stream: Stream) -> None:
         """
         :param object pipe: `process.stdout` or `process.stdout`
         """
