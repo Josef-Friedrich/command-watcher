@@ -1,0 +1,3 @@
+[submodule "typings/icinga2apic"]
+	path = typings/icinga2apic
+	url = git@github.com:Josef-Friedrich/icinga2apic-stubs.git

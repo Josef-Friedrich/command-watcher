@@ -75,16 +75,9 @@ description = "Python Icinga 2 API - Continued"
 category = "main"
 optional = false
 python-versions = "*"
-develop = false
 
 [package.dependencies]
 requests = "*"
-
-[package.source]
-type = "git"
-url = "https://github.com/jf-forks/icinga2apic.git"
-reference = "18f19f2647e86751ba85f38f03dd599ac21e6d48"
-resolved_reference = "18f19f2647e86751ba85f38f03dd599ac21e6d48"
 
 [[package]]
 name = "idna"
@@ -312,7 +305,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "87f33417c35b9454256a447e00fee3541cf96c9997efe5c7435da7d78c2f5d51"
+content-hash = "6762a736f4469aa4a5374cef1a8a7c342c2560f1ac8f9045ef0de25645608d26"
 
 [metadata.files]
 autopep8 = []
