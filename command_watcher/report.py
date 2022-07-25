@@ -22,20 +22,18 @@ Status = Literal[0, 1, 2, 3]
 
 
 class BaseClass:
-
     def _obj_to_str(self, attributes: List[str] = []) -> str:
         if not attributes:
             attributes = dir(self)
         output: List[str] = []
         for attribute in attributes:
-            if not attribute.startswith('_') and \
-               not callable(getattr(self, attribute)):
+            if not attribute.startswith("_") and not callable(getattr(self, attribute)):
                 value = getattr(self, attribute)
                 if value:
                     value = textwrap.shorten(str(value), width=64)
-                    value = value.replace('\n', ' ')
-                    output.append('{}: \'{}\''.format(attribute, value))
-        return '[{}] {}'.format(self.__class__.__name__, ', '.join(output))
+                    value = value.replace("\n", " ")
+                    output.append("{}: '{}'".format(attribute, value))
+        return "[{}] {}".format(self.__class__.__name__, ", ".join(output))
 
 
 class MinimalMessageParams(TypedDict, total=False):
@@ -66,7 +64,7 @@ class MessageParams(MinimalMessageParams, total=False):
     log_records: str
     """Log records separated by new lines"""
 
-    processes: List['Process']
+    processes: List["Process"]
 
 
 class Message(BaseClass):
@@ -87,7 +85,7 @@ class Message(BaseClass):
     def status(self) -> int:
         """0 (OK), 1 (WARNING), 2 (CRITICAL), 3 (UNKOWN): see
         Nagios / Icinga monitoring status / state."""
-        return self._data.get('status', 0)
+        return self._data.get("status", 0)
 
     @property
     def status_text(self) -> str:
@@ -96,7 +94,7 @@ class Message(BaseClass):
 
     @property
     def service_name(self) -> str:
-        return self._data.get('service_name', 'service_not_set')
+        return self._data.get("service_name", "service_not_set")
 
     @property
     def performance_data(self) -> str:
@@ -104,23 +102,23 @@ class Message(BaseClass):
         :return: A concatenated string
         :rtype: str
         """
-        performance_data = self._data.get('performance_data')
+        performance_data = self._data.get("performance_data")
         if performance_data and isinstance(performance_data, dict):
             pairs: List[str] = []
             key: str
             value: Any
             for key, value in performance_data.items():
-                pairs.append('{!s}={!s}'.format(key, value))
-            return ' '.join(pairs)
-        return ''
+                pairs.append("{!s}={!s}".format(key, value))
+            return " ".join(pairs)
+        return ""
 
     @property
     def custom_message(self) -> str:
-        return self._data.get('custom_message', '')
+        return self._data.get("custom_message", "")
 
     @property
     def prefix(self) -> str:
-        return self._data.get('prefix', '[cwatcher]:')
+        return self._data.get("prefix", "[cwatcher]:")
 
     @property
     def message(self) -> str:
@@ -131,8 +129,8 @@ class Message(BaseClass):
         output.append(self.service_name.upper())
         output.append(self.status_text)
         if self.custom_message:
-            output.append('- {}'.format(self.custom_message))
-        return ' '.join(output)
+            output.append("- {}".format(self.custom_message))
+        return " ".join(output)
 
     @property
     def message_monitoring(self) -> str:
@@ -140,48 +138,48 @@ class Message(BaseClass):
         output: List[str] = []
         output.append(self.message)
         if self.performance_data:
-            output.append('|')
+            output.append("|")
             output.append(self.performance_data)
-        return ' '.join(output)
+        return " ".join(output)
 
     @property
     def body(self) -> str:
         """Text body for the e-mail message."""
         output: List[str] = []
-        output.append('Host: {}'.format(HOSTNAME))
-        output.append('User: {}'.format(USERNAME))
-        output.append('Service name: {}'.format(self.service_name))
+        output.append("Host: {}".format(HOSTNAME))
+        output.append("User: {}".format(USERNAME))
+        output.append("Service name: {}".format(self.service_name))
 
         if self.performance_data:
-            output.append('Performance data: {}'.format(self.performance_data))
+            output.append("Performance data: {}".format(self.performance_data))
 
-        body: str = self._data.get('body', '')
+        body: str = self._data.get("body", "")
         if body:
-            output.append('')
+            output.append("")
             output.append(body)
 
-        log_records = self._data.get('log_records', '')
+        log_records = self._data.get("log_records", "")
         if log_records:
-            output.append('')
-            output.append('Log records:')
-            output.append('')
+            output.append("")
+            output.append("Log records:")
+            output.append("")
             output.append(log_records)
 
-        return '\n'.join(output)
+        return "\n".join(output)
 
     @property
     def processes(self) -> Optional[str]:
         output: List[str] = []
-        processes = self._data.get('processes')
+        processes = self._data.get("processes")
         if processes:
             for process in processes:
-                output.append(' '.join(process.args_normalized))
+                output.append(" ".join(process.args_normalized))
         if output:
-            return'({})'.format('; '.join(output))
+            return "({})".format("; ".join(output))
 
     @property
     def user(self) -> str:
-        return '[user:{}]'.format(USERNAME)
+        return "[user:{}]".format(USERNAME)
 
 
 class BaseChannel(BaseClass, metaclass=abc.ABCMeta):
@@ -189,28 +187,39 @@ class BaseChannel(BaseClass, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def report(self, message: Message) -> None:
-        raise NotImplementedError('A reporter class must have a `report` '
-                                  'method.')
+        raise NotImplementedError("A reporter class must have a `report` " "method.")
 
 
 class EmailChannel(BaseChannel):
     """Send reports by e-mail."""
 
-    def __init__(self, smtp_server: str, smtp_login: str, smtp_password: str,
-                 to_addr: str, from_addr: str = '',
-                 to_addr_critical: str = ''):
+    def __init__(
+        self,
+        smtp_server: str,
+        smtp_login: str,
+        smtp_password: str,
+        to_addr: str,
+        from_addr: str = "",
+        to_addr_critical: str = "",
+    ):
         self.smtp_server = smtp_server
         self.smtp_login = smtp_login
         self.smtp_password = smtp_password
         self.to_addr = to_addr
         self.from_addr = from_addr
         if not from_addr:
-            self.from_addr = '{0} <{1}@{0}>'.format(HOSTNAME, USERNAME)
+            self.from_addr = "{0} <{1}@{0}>".format(HOSTNAME, USERNAME)
         self.to_addr_critical = to_addr_critical
 
     def __str__(self) -> str:
-        return self._obj_to_str(['smtp_server', 'smtp_login', 'to_addr',
-                                 'from_addr', ])
+        return self._obj_to_str(
+            [
+                "smtp_server",
+                "smtp_login",
+                "to_addr",
+                "from_addr",
+            ]
+        )
 
     def report(self, message: Message) -> None:
         """Send an e-mail message.
@@ -229,7 +238,7 @@ class EmailChannel(BaseChannel):
             body=message.body,
             smtp_login=self.smtp_login,
             smtp_password=self.smtp_password,
-            smtp_server=self.smtp_server
+            smtp_server=self.smtp_server,
         )
 
 
@@ -239,8 +248,7 @@ class IcingaChannel(BaseChannel):
     password: str
     service_name: str
 
-    def __init__(self, url: str, user: str, password: str,
-                 service_name: str):
+    def __init__(self, url: str, user: str, password: str, service_name: str):
         self.url = url
         self.user = user
         self.password = password
@@ -248,7 +256,7 @@ class IcingaChannel(BaseChannel):
 
     def __str__(self) -> str:
         # No password!
-        return self._obj_to_str(['url', 'user', 'service_name'])
+        return self._obj_to_str(["url", "user", "service_name"])
 
     def report(self, message: Message) -> None:
         icinga.send_passive_check(
@@ -259,7 +267,7 @@ class IcingaChannel(BaseChannel):
             host_name=HOSTNAME,
             service_name=message.service_name,
             text_output=message.message,
-            performance_data=message.performance_data
+            performance_data=message.performance_data,
         )
 
 
@@ -267,11 +275,11 @@ class BeepChannel(BaseChannel):
     """Send beep sounds."""
 
     def __init__(self):
-        self.cmd = shutil.which('beep')
+        self.cmd = shutil.which("beep")
 
     def __str__(self) -> str:
         # No password!
-        return self._obj_to_str(['cmd'])
+        return self._obj_to_str(["cmd"])
 
     def beep(self, frequency: float = 4186.01, length: float = 50) -> None:
         """
@@ -284,8 +292,7 @@ class BeepChannel(BaseChannel):
         :param length: Length in milliseconds.
         """
         # TODO: Use self.cmd -> Fix tests
-        subprocess.run(['beep', '-f', str(float(frequency)), '-l',
-                        str(float(length))])
+        subprocess.run(["beep", "-f", str(float(frequency)), "-l", str(float(length))])
 
     def report(self, message: Message) -> None:
         """Send a beep sounds.

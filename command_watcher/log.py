@@ -18,19 +18,18 @@ import termcolor
 # --> STDOUT 5
 # NOTSET 0
 STDERR = 35
-logging.addLevelName(STDERR, 'STDERR')
+logging.addLevelName(STDERR, "STDERR")
 STDOUT = 5
-logging.addLevelName(STDOUT, 'STDOUT')
+logging.addLevelName(STDOUT, "STDOUT")
 
-LOGFMT = '%(asctime)s_%(msecs)03d %(levelname)s %(message)s'
-DATEFMT = '%Y%m%d_%H%M%S'
+LOGFMT = "%(asctime)s_%(msecs)03d %(levelname)s %(message)s"
+DATEFMT = "%Y%m%d_%H%M%S"
 
 
 class LoggingHandler(BufferingHandler):
-    """Store of all logging records in the memory. Print all records on emit.
-    """
+    """Store of all logging records in the memory. Print all records on emit."""
 
-    _master_logger:  Optional[logging.Logger]
+    _master_logger: Optional[logging.Logger]
 
     def __init__(self, master_logger: Optional[logging.Logger] = None):
         BufferingHandler.__init__(self, capacity=1000000)
@@ -51,33 +50,33 @@ class LoggingHandler(BufferingHandler):
         # --> STDOUT 5
         # NOTSET 0
         attr = None
-        if level == 'CRITICAL':
-            color = 'red'
-            attr = 'bold'
-        elif level == 'ERROR':
-            color = 'red'
-        elif level == 'STDERR':
-            color = 'red'
-            attr = 'dark'
-        elif level == 'WARNING':
-            color = 'yellow'
-        elif level == 'INFO':
-            color = 'green'
-        elif level == 'DEBUG':
-            color = 'white'
-        elif level == 'STDOUT':
-            color = 'white'
-            attr = 'dark'
-        elif level == 'NOTSET':
-            color = 'grey'
+        if level == "CRITICAL":
+            color = "red"
+            attr = "bold"
+        elif level == "ERROR":
+            color = "red"
+        elif level == "STDERR":
+            color = "red"
+            attr = "dark"
+        elif level == "WARNING":
+            color = "yellow"
+        elif level == "INFO":
+            color = "green"
+        elif level == "DEBUG":
+            color = "white"
+        elif level == "STDOUT":
+            color = "white"
+            attr = "dark"
+        elif level == "NOTSET":
+            color = "grey"
         else:
-            color = 'grey'
+            color = "grey"
 
         if attr:
-            reverse = ['reverse', attr]
+            reverse = ["reverse", attr]
             normal = [attr]
         else:
-            reverse = ['reverse']
+            reverse = ["reverse"]
             normal = []
 
         if record.levelno >= STDERR:
@@ -85,16 +84,19 @@ class LoggingHandler(BufferingHandler):
         else:
             stream = sys.stdout
 
-        created = '{}_{:03d}'.format(
+        created = "{}_{:03d}".format(
             time.strftime(DATEFMT, time.localtime(record.created)),
             int(record.msecs),
         )
 
-        print('{} {} {}'.format(
-            created,
-            termcolor.colored(' {:<8} '.format(level), color, attrs=reverse),
-            termcolor.colored(record.msg, color, attrs=normal),
-        ), file=stream)
+        print(
+            "{} {} {}".format(
+                created,
+                termcolor.colored(" {:<8} ".format(level), color, attrs=reverse),
+                termcolor.colored(record.msg, color, attrs=normal),
+            ),
+            file=stream,
+        )
 
     def emit(self, record: logging.LogRecord) -> None:
         """
@@ -112,17 +114,17 @@ class LoggingHandler(BufferingHandler):
     def stdout(self) -> str:
         messages: List[str] = []
         for record in self.buffer:
-            if record.levelname == 'STDOUT':
+            if record.levelname == "STDOUT":
                 messages.append(record.msg)
-        return '\n'.join(messages)
+        return "\n".join(messages)
 
     @property
     def stderr(self) -> str:
         messages: List[str] = []
         for record in self.buffer:
-            if record.levelname == 'STDERR':
+            if record.levelname == "STDERR":
                 messages.append(record.msg)
-        return '\n'.join(messages)
+        return "\n".join(messages)
 
     @property
     def all_records(self) -> str:
@@ -130,17 +132,18 @@ class LoggingHandler(BufferingHandler):
         messages: List[str] = []
         for record in self.buffer:
             messages.append(self.format(record))
-        return '\n'.join(messages)
+        return "\n".join(messages)
 
 
 class ExtendedLogger(logging.Logger):
+    def stdout(self, line: object, *args: Any, **kws: Any) -> None:
+        ...
 
-    def stdout(self, line: object, *args: Any, **kws: Any) -> None: ...
-    def stderr(self, line: object, *args: Any, **kws: Any) -> None: ...
+    def stderr(self, line: object, *args: Any, **kws: Any) -> None:
+        ...
 
 
-def _log_stdout(self: ExtendedLogger, message: object, *args: Any,
-                **kws: Any) -> None:
+def _log_stdout(self: ExtendedLogger, message: object, *args: Any, **kws: Any) -> None:
     # Yes, logger takes its '*args' as 'args'.
     self._log(STDOUT, message, args, **kws)
 
@@ -151,8 +154,7 @@ extendedLogger: ExtendedLogger = cast(ExtendedLogger, logging.Logger)
 extendedLogger.stdout = _log_stdout  # type: ignore
 
 
-def _log_stderr(self: ExtendedLogger, message: object, *args: Any,
-                **kws: Any) -> None:
+def _log_stderr(self: ExtendedLogger, message: object, *args: Any, **kws: Any) -> None:
     # Yes, logger takes its '*args' as 'args'.
     self._log(STDERR, message, args, **kws)
 
@@ -160,8 +162,9 @@ def _log_stderr(self: ExtendedLogger, message: object, *args: Any,
 logging.Logger.stderr = _log_stderr  # type: ignore
 
 
-def setup_logging(master_logger: Optional[logging.Logger] = None) -> \
-        Tuple[ExtendedLogger, LoggingHandler]:
+def setup_logging(
+    master_logger: Optional[logging.Logger] = None,
+) -> Tuple[ExtendedLogger, LoggingHandler]:
     """Setup a fresh logger for each watch action.
 
     :param master_logger: Forward all log messages to a master logger."""
