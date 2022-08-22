@@ -5,7 +5,7 @@ import shutil
 import socket
 import subprocess
 import textwrap
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, TypedDict
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, TypedDict, Union
 
 from typing_extensions import Unpack
 
@@ -64,6 +64,8 @@ class MessageParams(MinimalMessageParams, total=False):
     log_records: str
     """Log records separated by new lines"""
 
+    body: str
+
     processes: List["Process"]
 
 
@@ -82,7 +84,7 @@ class Message(BaseClass):
         return self._obj_to_str()
 
     @property
-    def status(self) -> int:
+    def status(self) -> Literal[0, 1, 2, 3]:
         """0 (OK), 1 (WARNING), 2 (CRITICAL), 3 (UNKOWN): see
         Nagios / Icinga monitoring status / state."""
         return self._data.get("status", 0)
@@ -100,7 +102,6 @@ class Message(BaseClass):
     def performance_data(self) -> str:
         """
         :return: A concatenated string
-        :rtype: str
         """
         performance_data = self._data.get("performance_data")
         if performance_data and isinstance(performance_data, dict):
@@ -193,6 +194,13 @@ class BaseChannel(BaseClass, metaclass=abc.ABCMeta):
 class EmailChannel(BaseChannel):
     """Send reports by e-mail."""
 
+    smtp_server: str
+    smtp_login: str
+    smtp_password: str
+    to_addr: str
+    from_addr: str
+    to_addr_critical: str
+
     def __init__(
         self,
         smtp_server: str,
@@ -201,7 +209,7 @@ class EmailChannel(BaseChannel):
         to_addr: str,
         from_addr: str = "",
         to_addr_critical: str = "",
-    ):
+    ) -> None:
         self.smtp_server = smtp_server
         self.smtp_login = smtp_login
         self.smtp_password = smtp_password
@@ -248,7 +256,7 @@ class IcingaChannel(BaseChannel):
     password: str
     service_name: str
 
-    def __init__(self, url: str, user: str, password: str, service_name: str):
+    def __init__(self, url: str, user: str, password: str, service_name: str) -> None:
         self.url = url
         self.user = user
         self.password = password
@@ -274,7 +282,9 @@ class IcingaChannel(BaseChannel):
 class BeepChannel(BaseChannel):
     """Send beep sounds."""
 
-    def __init__(self):
+    cmd: Union[str, None]
+
+    def __init__(self) -> None:
         self.cmd = shutil.which("beep")
 
     def __str__(self) -> str:
@@ -315,7 +325,7 @@ class Reporter:
 
     channels: List[BaseChannel]
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.channels = []
 
     def add_channel(self, channel: BaseChannel) -> None:
@@ -328,4 +338,4 @@ class Reporter:
         return message
 
 
-reporter = Reporter()
+reporter: Reporter = Reporter()
