@@ -62,8 +62,6 @@ class MessageParams(MinimalMessageParams, total=False):
     log_records: str
     """Log records separated by new lines"""
 
-    body: str
-
     processes: List["Process"]
 
 
@@ -175,6 +173,7 @@ class Message(BaseClass):
                 output.append(" ".join(process.args_normalized))
         if output:
             return "({})".format("; ".join(output))
+        return None
 
     @property
     def user(self) -> str:

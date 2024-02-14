@@ -61,15 +61,19 @@ class CommandWatcherError(Exception):
 class Timer:
     """Measure the execution time of a command run."""
 
+    stop: float
+    """"The time when the timer stops. (UNIX timestamp)"""
+
+    start: float
+    """"The start time. (UNIX timestamp)"""
+
+    interval: float
+    """The time interval between start and stop."""
+
     def __init__(self) -> None:
         self.stop = 0
-        """"The time when the timer stops. (UNIX timestamp)"""
-
         self.start = time.time()
-        """"The start time. (UNIX timestamp)"""
-
         self.interval = 0
-        """The time interval between start and stop."""
 
     def result(self) -> str:
         """
@@ -210,7 +214,7 @@ class Process:
         args: Args,
         master_logger: Optional[ExtendedLogger] = None,
         **kwargs: Unpack[ProcessArgs],
-    ):
+    ) -> None:
         # self.args: typing.Union[str, list, tuple] = args
         self.args = args
 
@@ -236,9 +240,10 @@ class Process:
         self._start_thread(self.subprocess.stderr, "stderr")
 
         for _ in range(2):
-            for line, stream in iter(self._queue.get, None):
-                if line:
-                    line = line.decode("utf-8").strip()
+            for line_bytes, stream in iter(self._queue.get, None):
+                line: str = ""
+                if line_bytes:
+                    line = line_bytes.decode("utf-8").strip()
 
                 if line:
                     if stream == "stderr":
@@ -259,6 +264,7 @@ class Process:
     @property
     def stdout(self) -> str:
         """Alias / shortcut for `self.log_handler.stdout`."""
+
         return self.log_handler.stdout
 
     @property
@@ -284,10 +290,12 @@ class Process:
             with pipe:
                 for line in iter(pipe.readline, b""):
                     self._queue.put((line, stream))
+        except Exception:
+            pass
         finally:
             self._queue.put(None)
 
-    def _start_thread(self, pipe: Optional[IO[str]], stream: Stream) -> None:
+    def _start_thread(self, pipe: Optional[IO[bytes]], stream: Stream) -> None:
         """
         :param object pipe: `process.stdout` or `process.stdout`
         """

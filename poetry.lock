@@ -402,13 +402,13 @@ files = [
 
 [[package]]
 name = "stdout-stderr-capturing"
-version = "0.2.0"
+version = "0.2.1"
 description = "Capture the stdout or stderr output as a list in a context manager block (with)."
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = ">=3.10,<4.0"
 files = [
-    {file = "stdout_stderr_capturing-0.2.0-py3-none-any.whl", hash = "sha256:a730cf85703e97a8945b2726fbb8a6aa91bb82c9c14c35612bf8ff89ac6c1fe8"},
-    {file = "stdout_stderr_capturing-0.2.0.tar.gz", hash = "sha256:3af33b8136b90f70bf13129ae5a565c7d6da4a18704e7e1c0d9284af17620f92"},
+    {file = "stdout_stderr_capturing-0.2.1-py3-none-any.whl", hash = "sha256:c01ce47f1328de157dd197a70331011ee93b4a57330211100f013e67c4f82240"},
+    {file = "stdout_stderr_capturing-0.2.1.tar.gz", hash = "sha256:bd220cb95464b6270c78b9e6126cd2c7eba2eb0e3874df43a27e32513be67f5d"},
 ]
 
 [[package]]
