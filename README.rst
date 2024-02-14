@@ -1,3 +1,7 @@
+.. image:: http://img.shields.io/pypi/v/command-watcher.svg
+    :target: https://pypi.org/project/command-watcher
+    :alt: This package on the Python Package Index
+
 .. image:: https://github.com/Josef-Friedrich/command-watcher/actions/workflows/tests.yml/badge.svg
     :target: https://github.com/Josef-Friedrich/command-watcher/actions/workflows/tests.yml
     :alt: Tests
