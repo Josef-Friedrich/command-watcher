@@ -228,6 +228,17 @@ files = [
 requests = "*"
 
 [[package]]
+name = "icinga2apic-stubs"
+version = "0.1.0"
+description = "Type stubs for the icinga2apic package."
+optional = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "icinga2apic_stubs-0.1.0-py3-none-any.whl", hash = "sha256:7ec3260e705a317182d9a80af88cdafe80d62bc9207c48957390f04230927ed6"},
+    {file = "icinga2apic_stubs-0.1.0.tar.gz", hash = "sha256:10b76bc12acc518948290124443ae20f3cc715a9a20d2b3bf7426cb8c2fccdcf"},
+]
+
+[[package]]
 name = "idna"
 version = "3.6"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -535,4 +546,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "476c1d1ee44075429f5271cd0c0fc60ff677a47ad55b427fa3d9918e8acfd2d2"
+content-hash = "1253e651363ae37a21e51a3071d9f50df6fd72ec864868bffcfd0490cb6ea87c"

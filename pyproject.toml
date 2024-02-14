@@ -17,11 +17,12 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.10"
-conf2levels = "^0.5.0"
-icinga2apic = "^0.7.5"
-termcolor = "^1.1.0"
-types-requests = "^2.28.1"
-types-termcolor = "^1.1.5"
+conf2levels = "^0"
+icinga2apic = "^0"
+termcolor = "^1"
+types-requests = "^2"
+types-termcolor = "^1"
+icinga2apic-stubs = "^0"
 
 [tool.poetry.group.dev.dependencies]
 autopep8 = "^1.6.0"
