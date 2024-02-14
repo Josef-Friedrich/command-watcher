@@ -1,13 +1,13 @@
-import unittest
+from typing import Any
 from unittest import mock
 
 import command_watcher
 from command_watcher import Message
-from command_watcher.report import HOSTNAME, USERNAME
+from command_watcher.report import HOSTNAME, USERNAME, Status
 
 
-class TestClassMessage(unittest.TestCase):
-    def setUp(self) -> None:
+class TestClassMessage:
+    def setup_method(self) -> None:
         process_1 = command_watcher.Process("ls")
         process_2 = command_watcher.Process(["ls", "-a"])
         self.message = Message(
@@ -21,33 +21,33 @@ class TestClassMessage(unittest.TestCase):
         )
 
     def test_property_status(self) -> None:
-        self.assertEqual(self.message.status, 0)
+        assert self.message.status == 0
 
     def test_property_status_not_set(self) -> None:
         message = Message()
-        self.assertEqual(message.status, 0)
-        self.assertEqual(message.status_text, "OK")
+        assert message.status == 0
+        assert message.status_text == "OK"
 
     def test_property_status_text(self) -> None:
-        self.assertEqual(self.message.status_text, "OK")
+        assert self.message.status_text == "OK"
 
     def test_property_service_name_not_set(self) -> None:
         message = Message()
-        self.assertEqual(message.service_name, "service_not_set")
+        assert message.service_name == "service_not_set"
 
     def test_property_performance_data(self) -> None:
-        self.assertEqual(self.message.performance_data, "value1=1 value2=2")
+        assert self.message.performance_data == "value1=1 value2=2"
 
     def test_property_prefix(self) -> None:
-        self.assertEqual(self.message.prefix, "[cwatcher]:")
+        assert self.message.prefix == "[cwatcher]:"
 
     def test_property_message(self) -> None:
-        self.assertEqual(self.message.message, "[cwatcher]: SERVICE OK - Everything ok")
+        assert self.message.message == "[cwatcher]: SERVICE OK - Everything ok"
 
     def test_property_message_monitoring(self) -> None:
-        self.assertEqual(
-            self.message.message_monitoring,
-            "[cwatcher]: SERVICE OK - Everything ok | value1=1 value2=2",
+        assert (
+            self.message.message_monitoring
+            == "[cwatcher]: SERVICE OK - Everything ok | value1=1 value2=2"
         )
 
     def test_property_body(self) -> None:
@@ -58,14 +58,14 @@ class TestClassMessage(unittest.TestCase):
             "Performance data: value1=1 value2=2\n\n"
             "A long body text.\n\nLog records:\n\n1 OK \n2 Warning"
         )
-        self.assertEqual(self.message.body, body.format(HOSTNAME, USERNAME))
+        assert self.message.body == body.format(HOSTNAME, USERNAME)
 
     def test_property_processes(self) -> None:
-        self.assertEqual(self.message.processes, "(ls; ls -a)")
+        assert self.message.processes == "(ls; ls -a)"
 
 
-class TestClassEmailChannel(unittest.TestCase):
-    def setUp(self) -> None:
+class TestClassEmailChannel:
+    def setup_method(self) -> None:
         self.email = command_watcher.EmailChannel(
             smtp_server="mail.example.com:587",
             smtp_login="jf",
@@ -76,30 +76,29 @@ class TestClassEmailChannel(unittest.TestCase):
         )
 
     def test_attribute_smtp_server(self) -> None:
-        self.assertEqual(self.email.smtp_server, "mail.example.com:587")
+        assert self.email.smtp_server == "mail.example.com:587"
 
     def test_attribute_smtp_login(self) -> None:
-        self.assertEqual(self.email.smtp_login, "jf")
+        assert self.email.smtp_login == "jf"
 
     def test_attribute_smtp_password(self) -> None:
-        self.assertEqual(self.email.smtp_password, "123")
+        assert self.email.smtp_password == "123"
 
     def test_attribute_to_addr(self) -> None:
-        self.assertEqual(self.email.to_addr, "logs@example.com")
+        assert self.email.to_addr == "logs@example.com"
 
     def test_attribute_from_addr(self) -> None:
-        self.assertEqual(self.email.from_addr, "from@example.com")
+        assert self.email.from_addr == "from@example.com"
 
     def test_attribute_to_addr_critical(self) -> None:
-        self.assertEqual(self.email.to_addr_critical, "critical@example.com")
+        assert self.email.to_addr_critical == "critical@example.com"
 
     def test_magic_method_str(self) -> None:
         self.maxDiff = None
-        self.assertEqual(
-            str(self.email),
-            "[EmailChannel] smtp_server: 'mail.example.com:587', "
+        assert (
+            str(self.email) == "[EmailChannel] smtp_server: 'mail.example.com:587', "
             "smtp_login: 'jf', to_addr: 'logs@example.com', "
-            "from_addr: 'from@example.com'",
+            "from_addr: 'from@example.com'"
         )
 
     def test_method_report(self) -> None:
@@ -135,10 +134,10 @@ class TestClassEmailChannel(unittest.TestCase):
         )
 
 
-class TestClassIcingaChannel(unittest.TestCase):
+class TestClassIcingaChannel:
     icinga: command_watcher.IcingaChannel
 
-    def setUp(self) -> None:
+    def setup_method(self) -> None:
         self.icinga = command_watcher.IcingaChannel(
             url="1.2.3.4",
             user="u",
@@ -160,7 +159,7 @@ class TestClassIcingaChannel(unittest.TestCase):
             performance_data=performance_data,
         )
 
-    def send_passive_check(self, **kwargs):
+    def send_passive_check(self, **kwargs: Any) -> mock.MagicMock | mock.AsyncMock:
         message = Message(service_name="my_service", prefix="", **kwargs)
         with mock.patch(
             "command_watcher.icinga.send_passive_check"
@@ -169,21 +168,22 @@ class TestClassIcingaChannel(unittest.TestCase):
         return send_passive_check
 
     def test_property_url(self) -> None:
-        self.assertEqual(self.icinga.url, "1.2.3.4")
+        assert self.icinga.url == "1.2.3.4"
 
     def test_property_user(self) -> None:
-        self.assertEqual(self.icinga.user, "u")
+        assert self.icinga.user == "u"
 
     def test_property_password(self) -> None:
-        self.assertEqual(self.icinga.password, "1234")
+        assert self.icinga.password == "1234"
 
     def test_property_service_name(self) -> None:
-        self.assertEqual(self.icinga.service_name, "Service")
+        assert self.icinga.service_name == "Service"
 
     def test_magic_method_str(self) -> None:
-        self.assertEqual(
-            str(self.icinga),
-            "[IcingaChannel] url: '1.2.3.4', user: 'u', service_name: " "'Service'",
+        assert (
+            str(self.icinga)
+            == "[IcingaChannel] url: '1.2.3.4', user: 'u', service_name: "
+            "'Service'"
         )
 
     def test_method_send_passive_check(self) -> None:
@@ -223,11 +223,11 @@ class TestClassIcingaChannel(unittest.TestCase):
         )
 
 
-class TestClassBeepChannel(unittest.TestCase):
-    def setUp(self) -> None:
+class TestClassBeepChannel:
+    def setup_method(self) -> None:
         self.beep = command_watcher.BeepChannel()
 
-    def report(self, status: int):
+    def report(self, status: Status) -> mock.MagicMock | mock.AsyncMock:
         message = Message(service_name="my_service", prefix="", status=status)
         with mock.patch("subprocess.run") as subprocess_run:
             self.beep.report(message)

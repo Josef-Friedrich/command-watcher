@@ -37,7 +37,6 @@ class BaseClass:
 
 
 class MinimalMessageParams(TypedDict, total=False):
-
     custom_message: str
     """Custom message"""
 
@@ -47,13 +46,12 @@ class MinimalMessageParams(TypedDict, total=False):
     body: str
     """ A longer report text."""
 
-    preformance_data: Dict[str, Any]
+    performance_data: Dict[str, Any]
     """ A dictionary like
           `{'perf_1': 1, 'perf_2': 'test'}`"""
 
 
 class MessageParams(MinimalMessageParams, total=False):
-
     status: Status
     """ 0 (OK), 1 (WARNING), 2 (CRITICAL), 3 (UNKOWN): see
           Nagios / Icinga monitoring status / state."""
@@ -104,7 +102,7 @@ class Message(BaseClass):
         :return: A concatenated string
         """
         performance_data = self._data.get("performance_data")
-        if performance_data and isinstance(performance_data, dict):
+        if performance_data:
             pairs: List[str] = []
             key: str
             value: Any
