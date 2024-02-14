@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "command_watcher"
-version = "0.4.0"
+version = "0.4.1"
 description = "Module to watch the execution of shell scripts. Both streams (`stdout` and `stderr`) are captured."
 authors = ["Josef Friedrich <josef@friedrich.rocks>"]
 license = "MIT"
@@ -25,7 +25,6 @@ types-termcolor = "^1"
 icinga2apic-stubs = "^0"
 
 [tool.poetry.group.dev.dependencies]
-autopep8 = "^1.6.0"
 pytest = "^8"
 ruff = "^0"
 stdout-stderr-capturing = "^0"
