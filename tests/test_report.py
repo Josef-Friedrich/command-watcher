@@ -138,53 +138,32 @@ class TestClassIcingaChannel:
     icinga: command_watcher.IcingaChannel
 
     def setup_method(self) -> None:
-        self.icinga = command_watcher.IcingaChannel(
-            url="1.2.3.4",
-            user="u",
-            password="1234",
-            service_name="Service",
-        )
+        self.icinga = command_watcher.IcingaChannel(service_name="Service")
 
     def assert_called_with(
         self, mock: mock.Mock, status: int, text_output: str, performance_data: str
     ) -> None:
         mock.assert_called_with(
-            url="1.2.3.4",
-            user="u",
-            password="1234",
-            status=status,
-            host_name=HOSTNAME,
-            service_name="my_service",
-            text_output=text_output,
+            host=HOSTNAME,
+            service="my_service",
+            exit_status=status,
+            plugin_output=text_output,
             performance_data=performance_data,
         )
 
     def send_passive_check(self, **kwargs: Any) -> mock.MagicMock | mock.AsyncMock:
         message = Message(service_name="my_service", prefix="", **kwargs)
         with mock.patch(
-            "command_watcher.icinga.send_passive_check"
+            "command_watcher.report.send_service_check_result_safe"
         ) as send_passive_check:
             self.icinga.report(message)
         return send_passive_check
-
-    def test_property_url(self) -> None:
-        assert self.icinga.url == "1.2.3.4"
-
-    def test_property_user(self) -> None:
-        assert self.icinga.user == "u"
-
-    def test_property_password(self) -> None:
-        assert self.icinga.password == "1234"
 
     def test_property_service_name(self) -> None:
         assert self.icinga.service_name == "Service"
 
     def test_magic_method_str(self) -> None:
-        assert (
-            str(self.icinga)
-            == "[IcingaChannel] url: '1.2.3.4', user: 'u', service_name: "
-            "'Service'"
-        )
+        assert str(self.icinga) == "external configured icinga2 api client"
 
     def test_method_send_passive_check(self) -> None:
         send_passive_check = self.send_passive_check(

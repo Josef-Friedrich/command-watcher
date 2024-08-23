@@ -18,11 +18,10 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.10"
 conf2levels = "^0"
-icinga2apic = "^0"
 termcolor = "^1"
 types-requests = "^2"
 types-termcolor = "^1"
-icinga2apic-stubs = "^0"
+pretiac = "^0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8"

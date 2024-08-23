@@ -158,9 +158,9 @@ class TestClassWatch:
         watch.log.info("info")
         watch.run("ls")
 
-        with mock.patch("command_watcher.icinga.send_passive_check"), mock.patch(
-            "smtplib.SMTP"
-        ) as SMTP:
+        with mock.patch(
+            "command_watcher.report.send_service_check_result_safe"
+        ), mock.patch("smtplib.SMTP") as SMTP:
             watch.report(
                 status=0,
                 custom_message="My message",
@@ -178,9 +178,9 @@ class TestClassWatch:
 
     def test_method_report_channel_email_critical(self) -> None:
         watch = Watch(config_file=CONF, service_name="my_service")
-        with mock.patch("command_watcher.icinga.send_passive_check"), mock.patch(
-            "smtplib.SMTP"
-        ) as SMTP:
+        with mock.patch(
+            "command_watcher.report.send_service_check_result_safe"
+        ), mock.patch("smtplib.SMTP") as SMTP:
             watch.report(status=2)
         server = SMTP.return_value
         call_args = server.sendmail.call_args[0]
@@ -190,7 +190,7 @@ class TestClassWatch:
     def test_method_report_channel_nsca(self) -> None:
         watch = Watch(config_file=CONF, service_name="my_service")
         with mock.patch(
-            "command_watcher.icinga.send_passive_check"
+            "command_watcher.report.send_service_check_result_safe"
         ) as send_passive_check, mock.patch("command_watcher.report.send_email"):
             watch.report(
                 status=0,
@@ -199,13 +199,10 @@ class TestClassWatch:
                 prefix="",
             )
         send_passive_check.assert_called_with(
-            url="1.2.3.4",
-            user="u",
-            password=1234,
-            status=0,
-            host_name=HOSTNAME,
-            service_name="my_service",
-            text_output="MY_SERVICE OK - My message",
+            host=HOSTNAME,
+            service="my_service",
+            exit_status=0,
+            plugin_output="MY_SERVICE OK - My message",
             performance_data="perf_1=1 perf_2=test",
         )
 

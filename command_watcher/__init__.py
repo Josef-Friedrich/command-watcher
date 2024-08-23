@@ -390,9 +390,6 @@ class Watch:
             try:
                 config_reader.check_section("icinga")
                 icinga_reporter = IcingaChannel(
-                    url=self._conf.icinga.url,
-                    user=self._conf.icinga.user,
-                    password=self._conf.icinga.password,
                     service_name=self._service_name,
                 )
                 reporter.add_channel(icinga_reporter)

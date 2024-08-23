@@ -136,11 +136,9 @@ class LoggingHandler(BufferingHandler):
 
 
 class ExtendedLogger(logging.Logger):
-    def stdout(self, line: object, *args: Any, **kws: Any) -> None:
-        ...
+    def stdout(self, line: object, *args: Any, **kws: Any) -> None: ...
 
-    def stderr(self, line: object, *args: Any, **kws: Any) -> None:
-        ...
+    def stderr(self, line: object, *args: Any, **kws: Any) -> None: ...
 
 
 def _log_stdout(self: ExtendedLogger, message: object, *args: Any, **kws: Any) -> None:

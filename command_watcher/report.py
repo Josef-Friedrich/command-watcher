@@ -7,9 +7,9 @@ import subprocess
 import textwrap
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, TypedDict, Union
 
+from pretiac import send_service_check_result_safe
 from typing_extensions import Unpack
 
-from . import icinga
 from .email import send_email
 
 if TYPE_CHECKING:
@@ -88,7 +88,14 @@ class Message(BaseClass):
     @property
     def status_text(self) -> str:
         """The status as a text word like `OK`."""
-        return icinga.States[self.status]
+        if self.status == 0:
+            return "OK"
+        elif self.status == 1:
+            return "WARNING"
+        elif self.status == 2:
+            return "CRITICAL"
+        else:
+            return "UNKNOWN"
 
     @property
     def service_name(self) -> str:
@@ -248,32 +255,28 @@ class EmailChannel(BaseChannel):
 
 
 class IcingaChannel(BaseChannel):
-    url: str
-    user: str
-    password: str
     service_name: str
 
-    def __init__(self, url: str, user: str, password: str, service_name: str) -> None:
-        self.url = url
-        self.user = user
-        self.password = password
+    def __init__(
+        self,
+        service_name: str,
+    ) -> None:
         self.service_name = service_name
 
     def __str__(self) -> str:
-        # No password!
-        return self._obj_to_str(["url", "user", "service_name"])
+        return "external configured icinga2 api client"
 
     def report(self, message: Message) -> None:
-        icinga.send_passive_check(
-            url=self.url,
-            user=self.user,
-            password=self.password,
-            status=message.status,
-            host_name=HOSTNAME,
-            service_name=message.service_name,
-            text_output=message.message,
-            performance_data=message.performance_data,
-        )
+        try:
+            send_service_check_result_safe(
+                host=HOSTNAME,
+                service=message.service_name,
+                exit_status=message.status,
+                plugin_output=message.message,
+                performance_data=message.performance_data,
+            )
+        except Exception:
+            print("sending to icinga failed")
 
 
 class BeepChannel(BaseChannel):

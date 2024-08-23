@@ -29,7 +29,7 @@ def send_email(
     """
     message = MIMEText(body, "plain", "utf-8")
 
-    message["Subject"] = Header(subject, "utf-8")
+    message["Subject"] = str(Header(subject, "utf-8"))
     message["From"] = from_addr
     message["To"] = to_addr
     message["Date"] = formatdate(localtime=True)
