@@ -158,9 +158,9 @@ class TestClassWatch:
         watch.log.info("info")
         watch.run("ls")
 
-        with mock.patch(
-            "command_watcher.report.send_service_check_result_safe"
-        ), mock.patch("smtplib.SMTP") as SMTP:
+        with mock.patch("command_watcher.report.get_default_client"), mock.patch(
+            "smtplib.SMTP"
+        ) as SMTP:
             watch.report(
                 status=0,
                 custom_message="My message",
@@ -178,9 +178,9 @@ class TestClassWatch:
 
     def test_method_report_channel_email_critical(self) -> None:
         watch = Watch(config_file=CONF, service_name="my_service")
-        with mock.patch(
-            "command_watcher.report.send_service_check_result_safe"
-        ), mock.patch("smtplib.SMTP") as SMTP:
+        with mock.patch("command_watcher.report.get_default_client"), mock.patch(
+            "smtplib.SMTP"
+        ) as SMTP:
             watch.report(status=2)
         server = SMTP.return_value
         call_args = server.sendmail.call_args[0]
@@ -190,7 +190,7 @@ class TestClassWatch:
     def test_method_report_channel_nsca(self) -> None:
         watch = Watch(config_file=CONF, service_name="my_service")
         with mock.patch(
-            "command_watcher.report.send_service_check_result_safe"
+            "command_watcher.report.get_default_client"
         ) as send_passive_check, mock.patch("command_watcher.report.send_email"):
             watch.report(
                 status=0,

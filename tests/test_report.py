@@ -154,7 +154,7 @@ class TestClassIcingaChannel:
     def send_passive_check(self, **kwargs: Any) -> mock.MagicMock | mock.AsyncMock:
         message = Message(service_name="my_service", prefix="", **kwargs)
         with mock.patch(
-            "command_watcher.report.send_service_check_result_safe"
+            "command_watcher.report.get_default_client"
         ) as send_passive_check:
             self.icinga.report(message)
         return send_passive_check
