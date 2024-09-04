@@ -200,7 +200,7 @@ class TestClassWatch:
             )
         send_service_check_result.assert_called_with(
             service="my_service",
-            host="zotac",
+            host=HOSTNAME,
             exit_status=0,
             plugin_output="MY_SERVICE OK - My message",
             performance_data="perf_1=1 perf_2=test",
