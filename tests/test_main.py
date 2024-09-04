@@ -158,7 +158,7 @@ class TestClassWatch:
         watch.log.info("info")
         watch.run("ls")
 
-        with mock.patch("command_watcher.report.get_default_client"), mock.patch(
+        with mock.patch("command_watcher.report.send_service_check_result"), mock.patch(
             "smtplib.SMTP"
         ) as SMTP:
             watch.report(
@@ -178,7 +178,7 @@ class TestClassWatch:
 
     def test_method_report_channel_email_critical(self) -> None:
         watch = Watch(config_file=CONF, service_name="my_service")
-        with mock.patch("command_watcher.report.get_default_client"), mock.patch(
+        with mock.patch("command_watcher.report.send_service_check_result"), mock.patch(
             "smtplib.SMTP"
         ) as SMTP:
             watch.report(status=2)
@@ -187,24 +187,24 @@ class TestClassWatch:
         assert call_args[1] == ["critical@example.com"]
         assert "From: from@example.com\nTo: critical@example.com\n" in call_args[2]
 
-    @pytest.mark.skip
     def test_method_report_channel_nsca(self) -> None:
         watch = Watch(config_file=CONF, service_name="my_service")
         with mock.patch(
-            "command_watcher.report.get_default_client"
-        ) as send_passive_check, mock.patch("command_watcher.report.send_email"):
+            "command_watcher.report.send_service_check_result"
+        ) as send_service_check_result, mock.patch("command_watcher.report.send_email"):
             watch.report(
                 status=0,
                 custom_message="My message",
                 performance_data={"perf_1": 1, "perf_2": "test"},
                 prefix="",
             )
-        send_passive_check.assert_called_with(
-            host=HOSTNAME,
+        send_service_check_result.assert_called_with(
             service="my_service",
+            host="zotac",
             exit_status=0,
             plugin_output="MY_SERVICE OK - My message",
             performance_data="perf_1=1 perf_2=test",
+            service_display_name=None,
         )
 
         records = watch._log_handler.all_records  # type: ignore

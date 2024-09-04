@@ -7,11 +7,10 @@ import subprocess
 import textwrap
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, TypedDict, Union
 
-from pretiac import Client as PretiacClient
-from pretiac import get_default_client
 from typing_extensions import Unpack
 
 from .email import send_email
+from .icinga import send_service_check_result
 
 if TYPE_CHECKING:
     from . import Process
@@ -265,27 +264,24 @@ class EmailChannel(BaseChannel):
 class IcingaChannel(BaseChannel):
     service_name: str
 
-    client: PretiacClient
-
     def __init__(
         self,
         service_name: str,
     ) -> None:
         self.service_name = service_name
-        self.client = get_default_client()
 
     def __str__(self) -> str:
         return "external configured icinga2 api client"
 
     def report(self, message: Message) -> None:
         try:
-            self.client.send_service_check_result(
+            send_service_check_result(
                 service=message.service_name,
                 host=HOSTNAME,
                 exit_status=message.status,
                 plugin_output=message.message,
                 performance_data=message.performance_data,
-                display_name=message.service_display_name,
+                service_display_name=message.service_display_name,
             )
         except Exception:
             print("sending to icinga failed")
