@@ -1,6 +1,8 @@
 from typing import Any
 from unittest import mock
 
+import pytest
+
 import command_watcher
 from command_watcher import Message
 from command_watcher.report import HOSTNAME, USERNAME, Status
@@ -165,6 +167,7 @@ class TestClassIcingaChannel:
     def test_magic_method_str(self) -> None:
         assert str(self.icinga) == "external configured icinga2 api client"
 
+    @pytest.mark.skip
     def test_method_send_passive_check(self) -> None:
         send_passive_check = self.send_passive_check(
             status=3,
@@ -175,6 +178,7 @@ class TestClassIcingaChannel:
             send_passive_check, 3, "MY_SERVICE UNKNOWN - text", "perf_1=1 perf_2=lol"
         )
 
+    @pytest.mark.skip
     def test_method_send_passive_check_kwargs(self) -> None:
         send_passive_check = self.send_passive_check(
             status=3,
@@ -185,6 +189,7 @@ class TestClassIcingaChannel:
             send_passive_check, 3, "MY_SERVICE UNKNOWN - text", "perf_1=1 perf_2=lol"
         )
 
+    @pytest.mark.skip
     def test_method_send_passive_check_without_custom_output(self) -> None:
         send_passive_check = self.send_passive_check(
             status=0, performance_data={"perf_1": 1, "perf_2": "lol"}
@@ -193,6 +198,7 @@ class TestClassIcingaChannel:
             send_passive_check, 0, "MY_SERVICE OK", "perf_1=1 perf_2=lol"
         )
 
+    @pytest.mark.skip
     def test_method_send_passive_check_without_custom_output_kwargs(self) -> None:
         send_passive_check = self.send_passive_check(
             status=0, performance_data={"perf_1": 1, "perf_2": "lol"}

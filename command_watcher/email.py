@@ -12,7 +12,7 @@ def send_email(
     smtp_login: str,
     smtp_password: str,
     smtp_server: str,
-):
+) -> dict[str, tuple[int, bytes]]:
     """
     Send a email.
 

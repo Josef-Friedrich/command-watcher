@@ -74,10 +74,10 @@ class Message(BaseClass):
 
     _data: MessageParams
 
-    def __init__(self, **data: Unpack[MessageParams]):
+    def __init__(self, **data: Unpack[MessageParams]) -> None:
         self._data = data
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self._obj_to_str()
 
     @property
@@ -273,8 +273,8 @@ class IcingaChannel(BaseChannel):
     def report(self, message: Message) -> None:
         try:
             self.client.send_service_check_result(
-                host=HOSTNAME,
                 service=message.service_name,
+                host=HOSTNAME,
                 exit_status=message.status,
                 plugin_output=message.message,
                 performance_data=message.performance_data,

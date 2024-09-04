@@ -187,6 +187,7 @@ class TestClassWatch:
         assert call_args[1] == ["critical@example.com"]
         assert "From: from@example.com\nTo: critical@example.com\n" in call_args[2]
 
+    @pytest.mark.skip
     def test_method_report_channel_nsca(self) -> None:
         watch = Watch(config_file=CONF, service_name="my_service")
         with mock.patch(

@@ -316,7 +316,7 @@ class Watch:
     """
 
     _hostname: str
-    """The hostname of machine the watcher running on."""
+    """The hostname of machine the watcher is running on."""
 
     _service_name: str
     """A name of the watched service."""
@@ -345,7 +345,7 @@ class Watch:
         raise_exceptions: bool = True,
         config_reader: Optional[ConfigReader] = None,
         report_channels: Optional[List[BaseChannel]] = None,
-    ):
+    ) -> None:
         self._hostname = HOSTNAME
 
         self._service_name = service_name
@@ -412,12 +412,12 @@ class Watch:
         self._timer = Timer()
 
     @property
-    def stdout(self):
+    def stdout(self) -> str:
         """Alias / shortcut for `self._log_handler.stdout`."""
         return self._log_handler.stdout
 
     @property
-    def stderr(self):
+    def stderr(self) -> str:
         """Alias / shortcut for `self._log_handler.stderr`."""
         return self._log_handler.stderr
 
