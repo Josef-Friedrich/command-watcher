@@ -60,6 +60,9 @@ class MessageParams(MinimalMessageParams, total=False):
     service_name: str
     """The name of the service."""
 
+    service_display_name: str
+    """The human readable version of a service name."""
+
     log_records: str
     """Log records separated by new lines"""
 
@@ -101,6 +104,10 @@ class Message(BaseClass):
     @property
     def service_name(self) -> str:
         return self._data.get("service_name", "service_not_set")
+
+    @property
+    def service_display_name(self) -> str | None:
+        return self._data.get("service_display_name", None)
 
     @property
     def performance_data(self) -> str:
@@ -278,6 +285,7 @@ class IcingaChannel(BaseChannel):
                 exit_status=message.status,
                 plugin_output=message.message,
                 performance_data=message.performance_data,
+                display_name=message.service_display_name,
             )
         except Exception:
             print("sending to icinga failed")

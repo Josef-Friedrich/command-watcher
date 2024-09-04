@@ -6,10 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
-## Unreleased
+## [v0.5.0](https://github.com/Josef-Friedrich/command-watcher/releases/tag/v0.5.0) - 2024-09-04
 
-<small>[Compare with latest](https://github.com/Josef-Friedrich/command-watcher/compare/v0.4.1...HEAD)</small>
-<!-- insertion marker -->
+<small>[Compare with v0.4.1](https://github.com/Josef-Friedrich/command-watcher/compare/v0.4.1...v0.5.0)</small>
+
+### Added
+
+- Add new parameter: service_display_name ([fc463df](https://github.com/Josef-Friedrich/command-watcher/commit/fc463df80ed5b5478de4ef047852e9aebff7ca4c) by Josef Friedrich).
 
 ## [v0.4.1](https://github.com/Josef-Friedrich/command-watcher/releases/tag/v0.4.1) - 2024-02-14
 
