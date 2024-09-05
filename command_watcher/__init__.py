@@ -15,8 +15,6 @@ from importlib import metadata
 from typing import (
     IO,
     Any,
-    Dict,
-    List,
     Literal,
     Optional,
     Sequence,
@@ -170,7 +168,7 @@ CONFIG_READER_SPEC: Spec = {
 
 # Main code ###################################################################
 
-Args = Union[str, List[str], Tuple[str]]
+Args = Union[str, list[str], tuple[str]]
 
 
 class ProcessArgs(TypedDict, total=False):
@@ -183,7 +181,7 @@ class ProcessArgs(TypedDict, total=False):
     """Sets the current directory before the child is
         executed."""
 
-    env: Dict[str, Any]
+    env: dict[str, Any]
     """Defines the environment variables for the new process."""
 
 
@@ -263,28 +261,28 @@ class Process:
 
     @property
     def stdout(self) -> str:
-        """Alias / shortcut for `self.log_handler.stdout`."""
+        """Alias / shortcut for ``self.log_handler.stdout``."""
 
         return self.log_handler.stdout
 
     @property
     def line_count_stdout(self) -> int:
-        """The count of lines of the current `stderr`."""
+        """The count of lines of the current ``stderr``."""
         return len(self.stdout.splitlines())
 
     @property
     def stderr(self) -> str:
-        """Alias / shortcut for `self.log_handler.stderr`."""
+        """Alias / shortcut for ``self.log_handler.stderr``."""
         return self.log_handler.stderr
 
     @property
     def line_count_stderr(self) -> int:
-        """The count of lines of the current `stderr`."""
+        """The count of lines of the current ``stderr``."""
         return len(self.stderr.splitlines())
 
     def _stdout_stderr_reader(self, pipe: IO[bytes], stream: Stream) -> None:
         """
-        :param object pipe: `process.stdout` or `process.stdout`
+        :param object pipe: ``process.stdout`` or ``process.stdout``
         """
         try:
             with pipe:
@@ -297,7 +295,7 @@ class Process:
 
     def _start_thread(self, pipe: Optional[IO[bytes]], stream: Stream) -> None:
         """
-        :param object pipe: `process.stdout` or `process.stdout`
+        :param object pipe: ``process.stdout`` or ``process.stdout``
         """
         threading.Thread(target=self._stdout_stderr_reader, args=[pipe, stream]).start()
 
@@ -326,7 +324,7 @@ class Watch:
 
     _log_handler: LoggingHandler
 
-    processes: List[Process]
+    processes: list[Process]
     """A list of completed processes
     :py:class:`Process`. Everytime you use the method
     `run()` the process object is appened in the list."""
@@ -344,7 +342,7 @@ class Watch:
         service_name: str = "command_watcher",
         raise_exceptions: bool = True,
         config_reader: Optional[ConfigReader] = None,
-        report_channels: Optional[List[BaseChannel]] = None,
+        report_channels: Optional[list[BaseChannel]] = None,
     ) -> None:
         self._hostname = HOSTNAME
 
@@ -425,19 +423,19 @@ class Watch:
         self,
         args: Args,
         log: bool = True,
-        ignore_exceptions: List[int] = [],
+        ignore_exceptions: list[int] = [],
         **kwargs: Unpack[ProcessArgs],
     ) -> Process:
         """
         Run a process.
 
         :param args: List, tuple or string. A sequence of
-          process arguments, like ``subprocess.Popen(args)``.
+            process arguments, like ``subprocess.Popen(args)``.
         :param log: Log the ``stderr`` and the ``stdout`` of the
-          process. If false the ``stdout`` and the ``stderr`` are logged only
-          to the local process logger, not to get global master logger.
+            process. If false the ``stdout`` and the ``stderr`` are logged only
+            to the local process logger, not to get global master logger.
         :param ignore_exceptions: A list of none-zero exit codes, which is
-          ignored by this method.
+            ignored by this method.
         """
         if log:
             master_logger = self.log
@@ -475,7 +473,7 @@ class Watch:
         timer_result = self._timer.result()
         self.log.info("Overall execution time: {}".format(timer_result))
         status = data.get("status", 0)
-        data_dict: Dict[str, Any] = dict(data)
+        data_dict: dict[str, Any] = dict(data)
         if "performance_data" not in data_dict:
             data_dict["performance_data"] = {}
         data_dict["performance_data"]["execution_time"] = timer_result

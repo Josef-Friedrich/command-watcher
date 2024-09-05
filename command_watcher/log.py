@@ -3,7 +3,7 @@ import sys
 import time
 import uuid
 from logging.handlers import BufferingHandler
-from typing import Any, List, Optional, Tuple, cast
+from typing import Any, Optional, cast
 
 import termcolor
 
@@ -112,7 +112,7 @@ class LoggingHandler(BufferingHandler):
 
     @property
     def stdout(self) -> str:
-        messages: List[str] = []
+        messages: list[str] = []
         for record in self.buffer:
             if record.levelname == "STDOUT":
                 messages.append(record.msg)
@@ -120,7 +120,7 @@ class LoggingHandler(BufferingHandler):
 
     @property
     def stderr(self) -> str:
-        messages: List[str] = []
+        messages: list[str] = []
         for record in self.buffer:
             if record.levelname == "STDERR":
                 messages.append(record.msg)
@@ -129,7 +129,7 @@ class LoggingHandler(BufferingHandler):
     @property
     def all_records(self) -> str:
         """All log messages joined by line breaks."""
-        messages: List[str] = []
+        messages: list[str] = []
         for record in self.buffer:
             messages.append(self.format(record))
         return "\n".join(messages)
@@ -162,7 +162,7 @@ logging.Logger.stderr = _log_stderr  # type: ignore
 
 def setup_logging(
     master_logger: Optional[logging.Logger] = None,
-) -> Tuple[ExtendedLogger, LoggingHandler]:
+) -> tuple[ExtendedLogger, LoggingHandler]:
     """Setup a fresh logger for each watch action.
 
     :param master_logger: Forward all log messages to a master logger."""
