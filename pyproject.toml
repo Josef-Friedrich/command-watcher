@@ -21,13 +21,15 @@ conf2levels = "^0"
 termcolor = "^1"
 types-requests = "^2"
 types-termcolor = "^1"
-pretiac = "^0"
+pretiac = "^0.3"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8"
 ruff = "^0"
 stdout-stderr-capturing = "^0"
 tox = "^4"
+Sphinx = "^7"
+sphinx-rtd-theme = "^2"
 
 [build-system]
 requires = ["poetry-core"]

@@ -203,7 +203,6 @@ class TestClassIcingaChannel:
         )
 
 
-
 class TestClassBeepChannel:
     def setup_method(self) -> None:
         self.beep = command_watcher.BeepChannel()

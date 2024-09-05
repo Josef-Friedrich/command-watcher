@@ -413,12 +413,12 @@ class Watch:
 
     @property
     def stdout(self) -> str:
-        """Alias / shortcut for `self._log_handler.stdout`."""
+        """Alias / shortcut for ``self._log_handler.stdout``."""
         return self._log_handler.stdout
 
     @property
     def stderr(self) -> str:
-        """Alias / shortcut for `self._log_handler.stderr`."""
+        """Alias / shortcut for ``self._log_handler.stderr``."""
         return self._log_handler.stderr
 
     def run(
@@ -432,9 +432,9 @@ class Watch:
         Run a process.
 
         :param args: List, tuple or string. A sequence of
-          process arguments, like `subprocess.Popen(args)`.
-        :param log: Log the `stderr` and the `stdout` of the
-          process. If false the `stdout` and the `stderr` are logged only
+          process arguments, like ``subprocess.Popen(args)``.
+        :param log: Log the ``stderr`` and the ``stdout`` of the
+          process. If false the ``stdout`` and the ``stderr`` are logged only
           to the local process logger, not to get global master logger.
         :param ignore_exceptions: A list of none-zero exit codes, which is
           ignored by this method.
@@ -469,8 +469,8 @@ class Watch:
         return message
 
     def final_report(self, **data: Unpack[MessageParams]) -> Message:
-        """The same as the `report` method. Adds `execution_time` to the
-        `performance_data`.
+        """The same as the ``report`` method. Adds ``execution_time`` to the
+        ``performance_data``.
         """
         timer_result = self._timer.result()
         self.log.info("Overall execution time: {}".format(timer_result))
