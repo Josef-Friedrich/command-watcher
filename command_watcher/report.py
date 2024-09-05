@@ -264,24 +264,34 @@ class EmailChannel(BaseChannel):
 class IcingaChannel(BaseChannel):
     service_name: str
 
+    service_display_name: Optional[str]
+
     def __init__(
-        self,
-        service_name: str,
+        self, service_name: str, service_display_name: Optional[str] = None
     ) -> None:
         self.service_name = service_name
+        self.service_display_name = service_display_name
 
     def __str__(self) -> str:
         return "external configured icinga2 api client"
 
     def report(self, message: Message) -> None:
+        service_name = (
+            message.service_name if message.service_name else self.service_name
+        )
+        service_display_name = (
+            message.service_display_name
+            if message.service_display_name
+            else self.service_display_name
+        )
         try:
             send_service_check_result(
-                service=message.service_name,
+                service=service_name,
                 host=HOSTNAME,
                 exit_status=message.status,
                 plugin_output=message.message,
                 performance_data=message.performance_data,
-                service_display_name=message.service_display_name,
+                service_display_name=service_display_name,
             )
         except Exception:
             print("sending to icinga failed")

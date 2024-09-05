@@ -302,15 +302,16 @@ class Process:
 
 class Watch:
     """Watch the execution of a command. Capture all output of a command.
-    provide and setup a logging facility.
+    Provide and setup a logging facility.
 
     :param config_file: The file path of the configuration file in the INI
-      format.
+        format.
     :param service_name: A name of the watched service.
-    :param raise_exceptions: Raise exceptions if `watch.run()` exists with a
-      non-zero exit code.
+    :param service_display_name: A human readable form of the *service name*.
+    :param raise_exceptions: Raise exceptions if ``watch.run()`` exists with a
+        non-zero exit code.
     :param config_reader: A custom configuration reader. Specify this
-      parameter to not use the build in configuration reader.
+        parameter to not use the build in configuration reader.
     """
 
     _hostname: str
@@ -318,6 +319,9 @@ class Watch:
 
     _service_name: str
     """A name of the watched service."""
+
+    _service_display_name: Optional[str]
+    """A human readable form of the *service name*."""
 
     log: ExtendedLogger
     """A ready to go and configured logger."""
@@ -340,6 +344,7 @@ class Watch:
         self,
         config_file: Optional[str] = None,
         service_name: str = "command_watcher",
+        service_display_name: Optional[str] = None,
         raise_exceptions: bool = True,
         config_reader: Optional[ConfigReader] = None,
         report_channels: Optional[list[BaseChannel]] = None,
@@ -347,6 +352,7 @@ class Watch:
         self._hostname = HOSTNAME
 
         self._service_name = service_name
+        self._service_display_name = service_display_name
 
         log, log_handler = setup_logging()
 
@@ -389,6 +395,7 @@ class Watch:
                 config_reader.check_section("icinga")
                 icinga_reporter = IcingaChannel(
                     service_name=self._service_name,
+                    service_display_name=self._service_display_name,
                 )
                 reporter.add_channel(icinga_reporter)
                 self.log.debug(icinga_reporter)
