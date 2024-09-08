@@ -1,9 +1,14 @@
 """Small utility functions."""
 
 import os
+import pwd
 import shutil
+import socket
 import stat
 import urllib.request
+
+HOSTNAME = socket.gethostname()
+USERNAME = pwd.getpwuid(os.getuid()).pw_name
 
 
 def download(url: str, dest: str) -> None:

@@ -23,21 +23,25 @@ from typing import (
     Union,
 )
 
-from conf2levels import ClassInterface, ConfigReader, Spec
 from typing_extensions import Unpack
 
-from .log import ExtendedLogger, LoggingHandler, setup_logging
-from .report import (
-    HOSTNAME,
-    BaseChannel,
-    BeepChannel,
-    EmailChannel,
-    IcingaChannel,
+from command_watcher.channel import BaseChannel
+from command_watcher.config import Config, load_config
+from command_watcher.email import EmailChannel
+from command_watcher.icinga import IcingaChannel
+from command_watcher.log import ExtendedLogger, LoggingHandler, setup_logging
+from command_watcher.message import (
     Message,
     MessageParams,
     MinimalMessageParams,
+)
+from command_watcher.report import (
+    BeepChannel,
     Status,
     reporter,
+)
+from command_watcher.utils import (
+    HOSTNAME,
 )
 
 __version__: str = metadata.version("command_watcher")
@@ -81,89 +85,6 @@ class Timer:
         self.stop = time.time()
         self.interval = self.stop - self.start
         return "{:.3f}s".format(self.interval)
-
-
-# Configuration ###############################################################
-
-CONF_DEFAULTS = {
-    "email": {
-        "subject_prefix": "command_watcher",
-    },
-    "nsca": {
-        "port": 5667,
-    },
-}
-
-
-CONFIG_READER_SPEC: Spec = {
-    "email": {
-        "from_addr": {
-            "description": "The email address of the sender.",
-        },
-        "to_addr": {
-            "description": "The email address of the recipient.",
-            "not_empty": True,
-        },
-        "to_addr_critical": {
-            "description": "The email address of the recipient to send "
-            "critical messages to.",
-            "default": None,
-        },
-        "smtp_login": {
-            "description": "The SMTP login name.",
-            "not_empty": True,
-        },
-        "smtp_password": {
-            "description": "The SMTP password.",
-            "not_empty": True,
-        },
-        "smtp_server": {
-            "description": "The URL of the SMTP server, for example: "
-            "`smtp.example.com:587`.",
-            "not_empty": True,
-        },
-    },
-    "nsca": {
-        "remote_host": {
-            "description": "The IP address of the NSCA remote host.",
-            "not_empty": True,
-        },
-        "password": {
-            "description": "The NSCA password.",
-            "not_empty": True,
-        },
-        "encryption_method": {
-            "description": "The NSCA encryption method. The supported "
-            "encryption methods are: 0 1 2 3 4 8 11 14 15 16",
-            "not_empty": True,
-        },
-        "port": {
-            "description": "The NSCA port.",
-            "default": 5667,
-        },
-    },
-    "icinga": {
-        "url": {
-            "description": "The HTTP URL. /v1/actions/process-check-result "
-            "is appended.",
-            "not_empty": True,
-        },
-        "user": {
-            "description": "The user for the HTTP authentification.",
-            "not_empty": True,
-        },
-        "password": {
-            "description": "The password for the HTTP authentification.",
-            "not_empty": True,
-        },
-    },
-    "beep": {
-        "activated": {
-            "description": "Activate the beep channel to report auditive " "messages.",
-            "default": False,
-        }
-    },
-}
 
 
 # Main code ###################################################################
@@ -333,7 +254,7 @@ class Watch:
     :py:class:`Process`. Everytime you use the method
     `run()` the process object is appened in the list."""
 
-    _conf: Optional[ClassInterface]
+    _config: Optional[Config]
 
     _raise_exceptions: bool
     """Raise exceptions"""
@@ -346,7 +267,7 @@ class Watch:
         service_name: str = "command_watcher",
         service_display_name: Optional[str] = None,
         raise_exceptions: bool = True,
-        config_reader: Optional[ConfigReader] = None,
+        config: Optional[Config] = None,
         report_channels: Optional[list[BaseChannel]] = None,
     ) -> None:
         self._hostname = HOSTNAME
@@ -361,48 +282,40 @@ class Watch:
 
         self._log_handler = log_handler
 
-        self._conf = None
+        self._config = None
 
-        if not config_reader and config_file:
-            config_reader = ConfigReader(
-                spec=CONFIG_READER_SPEC,
-                ini=config_file,
-                dictionary=CONF_DEFAULTS,
-            )
+        if not config and config_file:
+            self._config = load_config(config_file)
 
-        if not config_reader:
-            raise Exception("No config_reader object")
-
-        self._conf = config_reader.get_class_interface()
+        if self._config is None:
+            self._config = load_config()
 
         if report_channels is None:
-            try:
-                config_reader.check_section("email")
+            if self._config.email is not None:
                 email_reporter = EmailChannel(
-                    smtp_server=self._conf.email.smtp_server,
-                    smtp_login=self._conf.email.smtp_login,
-                    smtp_password=self._conf.email.smtp_password,
-                    to_addr=self._conf.email.to_addr,
-                    from_addr=self._conf.email.from_addr,
-                    to_addr_critical=self._conf.email.to_addr_critical,
+                    smtp_server=self._config.email.smtp_server,
+                    smtp_login=self._config.email.smtp_login,
+                    smtp_password=self._config.email.smtp_password,
+                    to_addr=self._config.email.to_addr,
+                    from_addr=self._config.email.from_addr,
+                    to_addr_critical=self._config.email.to_addr_critical,
                 )
                 reporter.add_channel(email_reporter)
                 self.log.debug(email_reporter)
-            except (ValueError, KeyError):
-                pass
 
-            try:
-                config_reader.check_section("icinga")
+            if self._config.icinga is not None:
                 icinga_reporter = IcingaChannel(
                     service_name=self._service_name,
                     service_display_name=self._service_display_name,
                 )
                 reporter.add_channel(icinga_reporter)
                 self.log.debug(icinga_reporter)
-            except (ValueError, KeyError):
-                pass
 
-            if shutil.which("beep") and self._conf.beep.activated:
+            if (
+                shutil.which("beep")
+                and self._config.beep is not None
+                and self._config.beep.activated
+            ):
                 beep_reporter = BeepChannel()
                 reporter.add_channel(beep_reporter)
                 self.log.debug(beep_reporter)

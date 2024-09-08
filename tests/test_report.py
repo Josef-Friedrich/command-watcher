@@ -3,7 +3,8 @@ from unittest import mock
 
 import command_watcher
 from command_watcher import Message
-from command_watcher.report import HOSTNAME, USERNAME, Status
+from command_watcher.report import Status
+from command_watcher.utils import HOSTNAME, USERNAME
 
 
 class TestClassMessage:

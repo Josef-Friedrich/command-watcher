@@ -20,10 +20,10 @@ class EmailConfig:
     smtp_server: str
     """The URL of the SMTP server, for example: `smtp.example.com:587`."""
 
-    to_addr_critical: Optional[str] = None
+    to_addr_critical: str
     """The email address of the recipient to send critical messages to."""
 
-    from_addr: Optional[str] = None
+    from_addr: str
     """The email address of the sender."""
 
 
@@ -45,11 +45,13 @@ class Config:
 _config: Optional[Config] = None
 
 
-def load_config() -> Config:
+def load_config(config_file: Optional[str] = None) -> Config:
+    if config_file is None:
+        config_file = "/etc/command-watcher.yml"
     global _config
     if _config is None:
         adapter = TypeAdapter(Config)
-        with open("/etc/command-watcher.yml", "r") as file:
+        with open(config_file, "r") as file:
             config_raw = yaml.safe_load(file)
         _config = adapter.validate_python(config_raw)
     return _config

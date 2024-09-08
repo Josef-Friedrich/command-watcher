@@ -7,7 +7,8 @@ from stdout_stderr_capturing import Capturing
 
 import command_watcher
 from command_watcher import Args, Watch
-from command_watcher.report import HOSTNAME, USERNAME, Message
+from command_watcher.message import Message
+from command_watcher.utils import HOSTNAME, USERNAME
 
 from .helper import CONF, DIR_FILES
 
@@ -66,7 +67,7 @@ class TestClassWatch:
 
     def test_argument_config_file(self) -> None:
         watch = Watch(config_file=CONF, service_name="test")
-        assert watch._conf.email.to_addr == "to@example.com"  # type: ignore
+        assert watch._config.email.to_addr == "to@example.com"  # type: ignore
 
     def test_method_run_output_stdout(self) -> None:
         watch = Watch(config_file=CONF, service_name="test")
