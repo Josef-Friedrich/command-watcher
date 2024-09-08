@@ -24,9 +24,11 @@ and `stderr`) are captured.
 
 .. code-block:: python
 
+    #! /opt/venvs/command_watcher/bin/python
+
     from command_watcher import Watch
     watch = Watch(
-        config_file='/etc/command-watcher.ini',
+        config_file='/etc/command-watcher.yml',
         service_name='texlive_update'
     )
 
@@ -47,27 +49,29 @@ and `stderr`) are captured.
         },
     )
 
-.. code-block:: ini
+.. code-block:: yaml
 
-    [email]
-    subject_prefix = [cwatcher]
-    from_addr =
-    to_addr = logs@example.com
-    to_addr_critical = critical@example.com
-    smtp_login = mailer
-    smtp_password = 1234
-    smtp_server = mail.example.com:587
+        ---
+        email:
+            from_addr: logs@example.com
+            to_addr: logs@example.com
+            to_addr_critical: critical@example.com
+            smtp_login: mailer@mail.example.com
+            smtp_password: abcd
+            smtp_server: mail.example.com:587
 
-    [nsca]
-    remote_host = 1.2.3.4
-    password = asdf1234
-    encryption_method = 8
-    ; port = 5667
+        icinga:
+            api_endpoint_host: localhost
+            api_endpoint_port: 5665
+            client_private_key: /etc/pretiac/api-client.key.pem
+            client_certificate: /etc/pretiac/api-client.cert.pem
+            ca_certificate: /etc/pretiac/ca.crt
+            new_host_defaults:
+                templates: [passive-host]
+            new_service_defaults:
+                templates: [passive-service]
+                attrs:
+                check_interval: monthly
 
-    [icinga]
-    url = https://icinga.example.com:5665
-    user = user
-    password = 1234
-
-    [beep]
-    activated = True
+        beep:
+            activated: true

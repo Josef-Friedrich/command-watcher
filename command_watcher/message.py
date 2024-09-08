@@ -123,7 +123,8 @@ class Message(BaseClass):
 
     @property
     def prefix(self) -> str:
-        return self._data.get("prefix", "[cwatcher]:")
+        """For example: ``# ``"""
+        return self._data.get("prefix", "# ")
 
     @property
     def message(self) -> str:
