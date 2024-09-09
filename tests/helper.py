@@ -1,4 +1,7 @@
 import os
+from pathlib import Path
 
-DIR_FILES = os.path.join(os.path.dirname(__file__), "files")
+DIR_FILES = Path(__file__).resolve().parent / "files"
+"""Directory ``tests/files``"""
+
 CONF = os.path.join(DIR_FILES, "conf.ini")
