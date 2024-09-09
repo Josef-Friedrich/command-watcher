@@ -307,6 +307,7 @@ class Watch:
                 icinga_reporter = IcingaChannel(
                     service_name=self._service_name,
                     service_display_name=self._service_display_name,
+                    config=self._config.icinga,
                 )
                 reporter.add_channel(icinga_reporter)
                 self.log.debug(icinga_reporter)
