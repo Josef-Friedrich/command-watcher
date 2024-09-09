@@ -180,20 +180,6 @@ files = [
 ]
 
 [[package]]
-name = "conf2levels"
-version = "0.5.1"
-description = "A configuration reader which reads values stored in two key levels. The first key level is named “section” and the second level “key”."
-optional = false
-python-versions = ">=3.10,<4.0"
-files = [
-    {file = "conf2levels-0.5.1-py3-none-any.whl", hash = "sha256:64f4920e412309e98fc920e5343a78759ced21de4d985ff143cffc95017883f5"},
-    {file = "conf2levels-0.5.1.tar.gz", hash = "sha256:7e25fca08766d57d5eae86e0b7420734a83a87c410e9cf6bdbfddf96a3feb8ac"},
-]
-
-[package.dependencies]
-typing-extensions = ">=4.3.0,<5.0.0"
-
-[[package]]
 name = "distlib"
 version = "0.3.8"
 description = "Distribution utilities"
@@ -443,13 +429,13 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "pretiac"
-version = "0.4.0"
+version = "0.4.1"
 description = "pretiac: A PREtty Typed Icinga2 Api Client."
 optional = false
 python-versions = "<4.0,>=3.9"
 files = [
-    {file = "pretiac-0.4.0-py3-none-any.whl", hash = "sha256:a58d22818cb9a18b5d039ec0f7aedb909047c5a3d692046ac8016cb34adb92d4"},
-    {file = "pretiac-0.4.0.tar.gz", hash = "sha256:4bb8295f3570577c0dd7004b817baa3730a7b86e5b2d8687688af1c1a848ba5c"},
+    {file = "pretiac-0.4.1-py3-none-any.whl", hash = "sha256:488a18ca534d46f7ff7cd3a684253d9e708260028be1c2c0d286a6eabf4f02b1"},
+    {file = "pretiac-0.4.1.tar.gz", hash = "sha256:1d638b3eaf3a2aa19a01d67cdbf8828e94eba6d5b5cd067a1961e681a9c6b6d9"},
 ]
 
 [package.dependencies]
@@ -1086,4 +1072,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "52105f81febd7102a179b7373a184e44def42ba2967630e19d68fb86e8b5ba74"
+content-hash = "856c20dd53c4805db083c0d78afafd0450f78dd65df4ce9f73f76e8b85421dee"
