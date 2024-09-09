@@ -9,8 +9,8 @@ from command_watcher.utils import HOSTNAME, USERNAME
 
 class TestClassMessage:
     def setup_method(self) -> None:
-        process_1 = command_watcher.Process("ls")
-        process_2 = command_watcher.Process(["ls", "-a"])
+        process_1 = command_watcher.CommandExecutor("ls")
+        process_2 = command_watcher.CommandExecutor(["ls", "-a"])
         self.message = Message(
             status=0,
             service_name="service",

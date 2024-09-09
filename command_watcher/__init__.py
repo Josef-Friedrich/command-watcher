@@ -12,12 +12,12 @@ import subprocess
 import threading
 import time
 from importlib import metadata
+from pathlib import Path
 from typing import (
     IO,
     Any,
     Literal,
     Optional,
-    Sequence,
     Tuple,
     TypedDict,
     Union,
@@ -89,7 +89,11 @@ class Timer:
 
 # Main code ###################################################################
 
-Args = Union[str, list[str], tuple[str]]
+Arg = Union[str, Path]
+"""Command line argument"""
+
+Args = Union[Arg, list[Arg], tuple[Arg]]
+"""Command line arguments"""
 
 
 class ProcessArgs(TypedDict, total=False):
@@ -106,7 +110,7 @@ class ProcessArgs(TypedDict, total=False):
     """Defines the environment variables for the new process."""
 
 
-class Process:
+class CommandExecutor:
     """Run a process.
 
     You can use all keyword arguments from
@@ -173,12 +177,14 @@ class Process:
         self.log.info("Execution time: {}".format(timer.result()))
 
     @property
-    def args_normalized(self) -> Sequence[str]:
+    def args_normalized(self) -> list[str]:
         """Normalized `args`, always a list"""
-        if isinstance(self.args, str):
-            return shlex.split(self.args)
-        else:
-            return self.args
+        args = self.args
+        if isinstance(args, Path):
+            args = str(args)
+        if isinstance(args, str):
+            return shlex.split(args)
+        return [str(arg) for arg in args]
 
     @property
     def stdout(self) -> str:
@@ -249,7 +255,7 @@ class Watch:
 
     _log_handler: LoggingHandler
 
-    processes: list[Process]
+    processes: list[CommandExecutor]
     """A list of completed processes
     :py:class:`Process`. Everytime you use the method
     `run()` the process object is appened in the list."""
@@ -263,7 +269,7 @@ class Watch:
 
     def __init__(
         self,
-        config_file: Optional[str] = None,
+        config_file: Optional[Union[str, Path]] = None,
         service_name: str = "command_watcher",
         service_display_name: Optional[str] = None,
         raise_exceptions: bool = True,
@@ -346,7 +352,7 @@ class Watch:
         log: bool = True,
         ignore_exceptions: list[int] = [],
         **kwargs: Unpack[ProcessArgs],
-    ) -> Process:
+    ) -> CommandExecutor:
         """
         Run a process.
 
@@ -362,7 +368,7 @@ class Watch:
             master_logger = self.log
         else:
             master_logger = None
-        process = Process(args, master_logger=master_logger, **kwargs)
+        process = CommandExecutor(args, master_logger=master_logger, **kwargs)
         self.processes.append(process)
         rc = process.subprocess.returncode
         if self._raise_exceptions and rc != 0 and rc not in ignore_exceptions:

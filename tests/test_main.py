@@ -6,53 +6,40 @@ import pytest
 from stdout_stderr_capturing import Capturing
 
 import command_watcher
-from command_watcher import Process, Watch
+from command_watcher import CommandExecutor, Watch
 from command_watcher.message import Message
 from command_watcher.utils import HOSTNAME, USERNAME
+from tests.helper import CONF, DIR_FILES
 
-from .helper import CONF, DIR_FILES
 
-
-class TestClassProcess:
+class TestClassCommandExecutor:
     cmd_stderr = DIR_FILES / "stderr.sh"
 
     cmd_stdout = DIR_FILES / "stdout.sh"
 
     def test_attribute_args(self) -> None:
-        process = Process("ls -l")
+        process = CommandExecutor("ls -l")
         assert process.args == "ls -l"
 
-    def test_attribute_log(self) -> None:
-        process = Process("ls -l")
-        assert process.log.__class__.__name__ == "Logger"
-
-    def test_attribute_log_handler(self) -> None:
-        process = Process("ls -l")
-        assert process.log_handler.__class__.__name__ == "LoggingHandler"
-
-    def test_attribute_subprocess(self) -> None:
-        process = Process("ls -l")
-        assert process.subprocess.__class__.__name__ == "Popen"
-
     def test_property_args_normalized(self) -> None:
-        process = Process("ls -l")
+        process = CommandExecutor("ls -l")
         assert process.args_normalized == ["ls", "-l"]
 
     def test_property_stdout(self) -> None:
-        process = Process([str(self.cmd_stdout)])
+        process = CommandExecutor(self.cmd_stdout)
         assert process.stdout
 
     def test_property_line_count_stdout(self) -> None:
-        process = Process([str(self.cmd_stdout)])
+        process = CommandExecutor(self.cmd_stdout)
         assert process.line_count_stdout == 1
         assert process.line_count_stderr == 0
 
     def test_property_stderr(self) -> None:
-        process = Process([str(self.cmd_stderr)])
+        process = CommandExecutor(self.cmd_stderr)
         assert process.stderr
 
     def test_property_line_count_stderr(self) -> None:
-        process = Process([str(self.cmd_stderr)])
+        process = CommandExecutor(self.cmd_stderr)
         assert process.line_count_stdout == 0
         assert process.line_count_stderr == 1
 

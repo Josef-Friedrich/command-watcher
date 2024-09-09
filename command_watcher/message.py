@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, TypedDict
 from typing_extensions import Unpack
 
 if TYPE_CHECKING:
-    from . import Process
+    from . import CommandExecutor
 
 HOSTNAME = socket.gethostname()
 USERNAME = pwd.getpwuid(os.getuid()).pw_name
@@ -44,7 +44,7 @@ class MessageParams(MinimalMessageParams, total=False):
     log_records: str
     """Log records separated by new lines"""
 
-    processes: List["Process"]
+    processes: List["CommandExecutor"]
 
 
 class BaseClass:
