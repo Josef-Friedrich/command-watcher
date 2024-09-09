@@ -3,7 +3,7 @@ from email.header import Header
 from email.mime.text import MIMEText
 from email.utils import formatdate
 
-from command_watcher.channel import BaseChannel
+from command_watcher.channels.base_channel import BaseChannel
 from command_watcher.message import Message
 
 

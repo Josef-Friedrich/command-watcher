@@ -3,7 +3,7 @@ from typing import Optional
 from pretiac.client import Client
 from pretiac.config import Config
 
-from command_watcher.channel import BaseChannel
+from command_watcher.channels.base_channel import BaseChannel
 from command_watcher.message import Message
 from command_watcher.utils import HOSTNAME
 

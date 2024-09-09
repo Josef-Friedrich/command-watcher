@@ -25,10 +25,11 @@ from typing import (
 
 from typing_extensions import Unpack
 
-from command_watcher.channel import BaseChannel
+from command_watcher.channels.base_channel import BaseChannel
+from command_watcher.channels.beep import BeepChannel
+from command_watcher.channels.email import EmailChannel
+from command_watcher.channels.icinga import IcingaChannel
 from command_watcher.config import Config, load_config
-from command_watcher.email import EmailChannel
-from command_watcher.icinga import IcingaChannel
 from command_watcher.log import ExtendedLogger, LoggingHandler, setup_logging
 from command_watcher.message import (
     Message,
@@ -36,7 +37,6 @@ from command_watcher.message import (
     MinimalMessageParams,
 )
 from command_watcher.report import (
-    BeepChannel,
     Status,
     reporter,
 )
