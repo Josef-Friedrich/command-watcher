@@ -163,8 +163,8 @@ class TestClassWatch:
 
     def test_method_report_channel_email_critical(self) -> None:
         watch = Watch(config_file=CONF, service_name="my_service")
-        with mock.patch("command_watcher.report.send_service_check_result"), mock.patch(
-            "smtplib.SMTP"
+        with mock.patch("command_watcher.channels.icinga.IcingaChannel") as c, mock.patch(
+            "command_watcher.channels.email.SMTP"
         ) as SMTP:
             watch.report(status=2)
         server = SMTP.return_value
@@ -175,8 +175,10 @@ class TestClassWatch:
     def test_method_report_channel_nsca(self) -> None:
         watch = Watch(config_file=CONF, service_name="my_service")
         with mock.patch(
-            "command_watcher.report.send_service_check_result"
-        ) as send_service_check_result, mock.patch("command_watcher.report.send_email"):
+            "command_watcher.channels.icinga.Client"
+        ) as send_service_check_result, mock.patch(
+            "command_watcher.channels.email.SMTP"
+        ):
             watch.report(
                 status=0,
                 custom_message="My message",

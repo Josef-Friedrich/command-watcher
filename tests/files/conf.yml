@@ -7,5 +7,19 @@ email:
   smtp_password: Password
   smtp_server: smtp.example.com:587
 
+icinga:
+  api_endpoint_host: example.com
+  api_endpoint_port: 5665
+  client_private_key: /etc/pretiac/api-client.key.pem
+  client_certificate: /etc/pretiac/api-client.cert.pem
+  ca_certificate: /etc/pretiac/ca.crt
+  new_host_defaults:
+    templates: [passive-host]
+  new_service_defaults:
+    templates: [passive-service]
+    attrs:
+      # monthly: Error: Error while evaluating expression: Can't convert 'monthly' to a floating point number.
+      check_interval: 2678400
+
 beep:
   activated: true

@@ -1,48 +1,10 @@
-import smtplib
 from email.header import Header
 from email.mime.text import MIMEText
 from email.utils import formatdate
+from smtplib import SMTP
 
 from command_watcher.channels.base_channel import BaseChannel
 from command_watcher.message import Message
-
-
-def send_email(
-    from_addr: str,
-    to_addr: str,
-    subject: str,
-    body: str,
-    smtp_login: str,
-    smtp_password: str,
-    smtp_server: str,
-) -> dict[str, tuple[int, bytes]]:
-    """
-    Send a email.
-
-    :param from_addr: The email address of the sender.
-    :param to_addr: The email address of the recipient.
-    :param subject: The email subject.
-    :param body: The email body.
-    :param smtp_login: The SMTP login name.
-    :param smtp_password: The SMTP password.
-    :param smtp_server: The URL of the SMTP server, for
-      example: `smtp.example.com:587`.
-
-    :return: Problems
-    """
-    message = MIMEText(body, "plain", "utf-8")
-
-    message["Subject"] = str(Header(subject, "utf-8"))
-    message["From"] = from_addr
-    message["To"] = to_addr
-    message["Date"] = formatdate(localtime=True)
-
-    server = smtplib.SMTP(smtp_server)
-    server.starttls()
-    server.login(smtp_login, smtp_password)
-    problems = server.sendmail(from_addr, [to_addr], message.as_string())
-    server.quit()
-    return problems
 
 
 class EmailChannel(BaseChannel):
@@ -91,12 +53,15 @@ class EmailChannel(BaseChannel):
         else:
             to_addr = self.to_addr
 
-        send_email(
-            from_addr=self.from_addr,
-            to_addr=to_addr,
-            subject=message.message,
-            body=message.body,
-            smtp_login=self.smtp_login,
-            smtp_password=self.smtp_password,
-            smtp_server=self.smtp_server,
-        )
+        mime = MIMEText(message.body, "plain", "utf-8")
+
+        mime["Subject"] = str(Header(message.message, "utf-8"))
+        mime["From"] = self.from_addr
+        mime["To"] = to_addr
+        mime["Date"] = formatdate(localtime=True)
+
+        server = SMTP(self.smtp_server)
+        server.starttls()
+        server.login(self.smtp_login, self.smtp_password)
+        server.sendmail(self.from_addr, [to_addr], mime.as_string())
+        server.quit()
