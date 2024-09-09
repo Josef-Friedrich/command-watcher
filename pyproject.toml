@@ -18,7 +18,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.10"
 conf2levels = "^0"
-pretiac = "^0.3"
+pretiac = "^0.4"
 pydantic = "^2"
 pyyaml = "^6"
 termcolor = "^1"
