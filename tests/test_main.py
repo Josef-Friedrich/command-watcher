@@ -163,9 +163,9 @@ class TestClassWatch:
 
     def test_method_report_channel_email_critical(self) -> None:
         watch = Watch(config_file=CONF, service_name="my_service")
-        with mock.patch("command_watcher.channels.icinga.IcingaChannel") as c, mock.patch(
-            "command_watcher.channels.email.SMTP"
-        ) as SMTP:
+        with mock.patch(
+            "command_watcher.channels.icinga.IcingaChannel"
+        ) as c, mock.patch("command_watcher.channels.email.SMTP") as SMTP:
             watch.report(status=2)
         server = SMTP.return_value
         call_args = server.sendmail.call_args[0]

@@ -17,13 +17,15 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.10"
-pretiac = "^0.4.1"
+# pretiac = "^0.4.1"
+pretiac = { git = "https://github.com/Josef-Friedrich/PREtty-Typed-Icinga2-Api-Client_py.git" }
 pydantic = "^2"
 pyyaml = "^6"
 termcolor = "^1"
 types-pyyaml = "^6"
 types-requests = "^2"
 types-termcolor = "^1"
+
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8"
