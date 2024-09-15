@@ -39,7 +39,7 @@ class MessageParams(MinimalMessageParams, total=False):
     """The name of the service."""
 
     service_display_name: str
-    """The human readable version of a service name."""
+    """The human readable version of the service name."""
 
     log_records: str
     """Log records separated by new lines"""
