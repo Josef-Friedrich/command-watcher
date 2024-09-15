@@ -66,7 +66,7 @@ class IcingaChannel(BaseChannel):
             service=service_name,
             host=HOSTNAME,
             exit_status=message.status,
-            plugin_output=message.message,
+            plugin_output=message.plugin_output,
             performance_data=message.performance_data,
             display_name=service_display_name,
         )

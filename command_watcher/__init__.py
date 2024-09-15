@@ -55,7 +55,7 @@ class CommandWatcherError(Exception):
     def __init__(self, msg: str, **data: Unpack[MessageParams]):
         reporter.report(
             status=2,
-            custom_message="{}: {}".format(self.__class__.__name__, msg),
+            custom_message=f"{self.__class__.__name__}: {msg}",
             **data,  # type: ignore
         )
 
@@ -174,7 +174,7 @@ class CommandExecutor:
                     if stream == "stdout":
                         self.log.stdout(line)
         self.subprocess.wait()
-        self.log.info("Execution time: {}".format(timer.result()))
+        self.log.info(f"Execution time: {timer.result()}")
 
     @property
     def args_normalized(self) -> list[str]:
@@ -284,7 +284,7 @@ class Watch:
         log, log_handler = setup_logging()
 
         self.log = log
-        self.log.info("Hostname: {}".format(self._hostname))
+        self.log.info(f"Hostname: {self._hostname}")
 
         self._log_handler = log_handler
 
@@ -398,7 +398,7 @@ class Watch:
         ``performance_data``.
         """
         timer_result = self._timer.result()
-        self.log.info("Overall execution time: {}".format(timer_result))
+        self.log.info(f"Overall execution time: {timer_result}")
         status = data.get("status", 0)
         data_dict: dict[str, Any] = dict(data)
         if "performance_data" not in data_dict:

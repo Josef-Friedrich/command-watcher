@@ -34,12 +34,12 @@ and `stderr`) are captured.
 
     tlmgr = '/usr/local/texlive/bin/x86_64-linux/tlmgr'
 
-    watch.run('{} update --self'.format(tlmgr))
-    watch.run('{} update --all'.format(tlmgr))
+    watch.run(f'{tlmgr} update --self')
+    watch.run(f'{tlmgr} update --all')
     installed_packages = watch.run(
-        '{} info --only-installed'.format(tlmgr), log=False
+        f'{tlmgr} info --only-installed', log=False
     )
-    all_packages = watch.run('{} info'.format(tlmgr), log=False)
+    all_packages = watch.run(f'{tlmgr} info', log=False)
 
     watch.final_report(
         status=0,

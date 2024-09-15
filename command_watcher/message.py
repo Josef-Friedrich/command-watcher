@@ -58,7 +58,7 @@ class BaseClass:
                 if value:
                     value = textwrap.shorten(str(value), width=64)
                     value = value.replace("\n", " ")
-                    output.append("{}: '{}'".format(attribute, value))
+                    output.append(f"{attribute}: '{value}'")
         return "[{}] {}".format(self.__class__.__name__, ", ".join(output))
 
 
@@ -78,7 +78,7 @@ class Message(BaseClass):
 
     @property
     def status(self) -> Literal[0, 1, 2, 3]:
-        """0 (OK), 1 (WARNING), 2 (CRITICAL), 3 (UNKOWN): see
+        """0 (OK), 1 (WARNING), 2 (CRITICAL), 3 (UNKNOWN): see
         Nagios / Icinga monitoring status / state."""
         return self._data.get("status", 0)
 
@@ -124,11 +124,11 @@ class Message(BaseClass):
     @property
     def prefix(self) -> str:
         """For example: ``# ``"""
-        return self._data.get("prefix", "# ")
+        return self._data.get("prefix", "#")
 
     @property
     def message(self) -> str:
-        output: List[str] = []
+        output: list[str] = []
         if self.prefix:
             output.append(self.prefix)
 
@@ -139,10 +139,21 @@ class Message(BaseClass):
         return " ".join(output)
 
     @property
+    def plugin_output(self) -> str:
+        output: list[str] = []
+
+        if len(self.service_name) < 20:
+            output.append(self.service_name.upper())
+        output.append(self.status_text)
+        if self.custom_message:
+            output.append("- {}".format(self.custom_message))
+        return " ".join(output)
+
+    @property
     def message_monitoring(self) -> str:
-        """message + performance_data"""
+        """plugin_output + performance_data"""
         output: List[str] = []
-        output.append(self.message)
+        output.append(self.plugin_output)
         if self.performance_data:
             output.append("|")
             output.append(self.performance_data)
@@ -152,12 +163,12 @@ class Message(BaseClass):
     def body(self) -> str:
         """Text body for the e-mail message."""
         output: List[str] = []
-        output.append("Host: {}".format(HOSTNAME))
-        output.append("User: {}".format(USERNAME))
-        output.append("Service name: {}".format(self.service_name))
+        output.append(f"Host: {HOSTNAME}")
+        output.append(f"User: {USERNAME}")
+        output.append(f"Service name: {self.service_name}")
 
         if self.performance_data:
-            output.append("Performance data: {}".format(self.performance_data))
+            output.append(f"Performance data: {self.performance_data}")
 
         body: str = self._data.get("body", "")
         if body:
