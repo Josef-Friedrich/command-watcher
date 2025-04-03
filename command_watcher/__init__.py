@@ -149,6 +149,8 @@ class CommandExecutor:
 
         self.log.info("Run command: {}".format(" ".join(self.args_normalized)))
         timer = Timer()
+        # Maybe better: https://gist.github.com/nawatts/e2cdca610463200c12eac2a14efc0bfb#file-capture-and-print-subprocess-output-py
+        # instead of this solution with threads
         self.subprocess = subprocess.Popen(
             self.args_normalized,
             stdout=subprocess.PIPE,
