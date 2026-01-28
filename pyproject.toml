@@ -1,40 +1,44 @@
-[tool.poetry]
+[project]
 name = "command_watcher"
 version = "0.6.0"
 description = "Module to watch the execution of shell scripts. Both streams (`stdout` and `stderr`) are captured."
-authors = ["Josef Friedrich <josef@friedrich.rocks>"]
-license = "MIT"
+authors = [{ name = "Josef Friedrich", email = "josef@friedrich.rocks" }]
+requires-python = ">=3.12,<4"
 readme = "README.rst"
-repository = "https://github.com/Josef-Friedrich/command-watcher"
+license = "MIT"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+    "pretiac",
+    "pydantic>=2.12.5",
+    "pyyaml>=6.0.3",
+    "termcolor>=3.3.0",
+    "types-pyyaml>=6.0.12.20250915",
+    "types-requests>=2.32.4.20260107",
+    "types-termcolor>=1.1.6.2",
 ]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-# pretiac = "^0.4.1"
+[project.urls]
+Repository = "https://github.com/Josef-Friedrich/command-watcher"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+    "stdout-stderr-capturing>=0.2.1",
+]
+
+[tool.uv]
+
+[tool.uv.sources]
 pretiac = { git = "https://github.com/Josef-Friedrich/PREtty-Typed-Icinga2-Api-Client_py.git" }
-pydantic = "^2"
-pyyaml = "^6"
-termcolor = "^1"
-types-pyyaml = "^6"
-types-requests = "^2"
-types-termcolor = "^1"
-
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^8"
-ruff = "^0"
-stdout-stderr-capturing = "^0"
-tox = "^4"
-Sphinx = "^7"
-sphinx-rtd-theme = "^2"
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.9.26,<0.10.0"]
+build-backend = "uv_build"

@@ -1,6 +1,9 @@
 from stdout_stderr_capturing import Capturing
 
 import command_watcher
+import os
+
+os.environ["FORCE_COLOR"] = "1"
 
 
 class TestLogging:
