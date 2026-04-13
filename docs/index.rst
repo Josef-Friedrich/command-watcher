@@ -8,9 +8,15 @@ Welcome to command_watcher's documentation!
 
 .. automodule:: command_watcher
 
-.. automodule:: command_watcher.email
+.. automodule:: command_watcher.channels.base_channel
 
-.. automodule:: command_watcher.icinga
+.. automodule:: command_watcher.channels.beep
+
+.. automodule:: command_watcher.channels.email
+
+.. automodule:: command_watcher.channels.icinga
+
+.. automodule:: command_watcher.config
 
 .. automodule:: command_watcher.log
 
@@ -21,8 +27,6 @@ Welcome to command_watcher's documentation!
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
-
 
 Indices and tables
 ==================

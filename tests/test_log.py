@@ -1,7 +1,9 @@
+import os
+
 from stdout_stderr_capturing import Capturing
 
 import command_watcher
-import os
+import command_watcher.log
 
 os.environ["FORCE_COLOR"] = "1"
 
@@ -96,15 +98,15 @@ class TestColorizedPrint:
         with Capturing() as output:
             self.logger.debug("DEBUG 10")
         assert (
-            output[0][20:] == "\x1b[7m\x1b[37m DEBUG    \x1b[0m \x1b[37mDEBUG 10\x1b[0m"
+            output[0][20:] == "\x1b[7m\x1b[97m DEBUG    \x1b[0m \x1b[97mDEBUG 10\x1b[0m"
         )
 
     def test_stdout(self) -> None:
         with Capturing() as output:
             self.logger.stdout("STDOUT 5")
         assert (
-            output[0][20:] == "\x1b[2m\x1b[7m\x1b[37m STDOUT   \x1b[0m "
-            "\x1b[2m\x1b[37mSTDOUT 5\x1b[0m"
+            output[0][20:] == "\x1b[2m\x1b[7m\x1b[97m STDOUT   \x1b[0m "
+            "\x1b[2m\x1b[97mSTDOUT 5\x1b[0m"
         )
 
     def test_noset(self) -> None:

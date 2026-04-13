@@ -42,3 +42,8 @@ pretiac = { git = "https://github.com/Josef-Friedrich/PREtty-Typed-Icinga2-Api-C
 [build-system]
 requires = ["uv_build>=0.11.1,<0.12.0"]
 build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+verbosity_assertions = 2
+truncation_limit_lines = 999999
+truncation_limit_chars = 999999

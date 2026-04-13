@@ -5,7 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-<!-- insertion marker -->
+## [v0.6.0](https://github.com/Josef-Friedrich/command-watcher/releases/tag/v0.6.0) - 2026-04-13
+
+<small>[Compare with v0.5.0](https://github.com/Josef-Friedrich/command-watcher/compare/v0.5.0...v0.6.0)</small>
+
+
 ## [v0.5.0](https://github.com/Josef-Friedrich/command-watcher/releases/tag/v0.5.0) - 2024-09-04
 
 <small>[Compare with v0.4.1](https://github.com/Josef-Friedrich/command-watcher/compare/v0.4.1...v0.5.0)</small>

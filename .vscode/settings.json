@@ -28,6 +28,5 @@
     "reportImportCycles": "information"
   },
   "python.defaultInterpreterPath": ".venv/bin/python",
-  "python.testing.pytestEnabled": true,
-
+  "python.testing.pytestEnabled": true
 }

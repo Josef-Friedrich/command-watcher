@@ -40,11 +40,7 @@ format:
 	uv tool run ruff format
 
 # Build the documentation
-docs: docs_readme_patcher docs_sphinx
-
-# Generate the README file using the readme-patcher
-docs_readme_patcher:
-	uv tool run --isolated --no-cache readme-patcher
+docs: docs_sphinx
 
 # Generate the HTML documentation using Sphinx
 docs_sphinx:
