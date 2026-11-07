@@ -28,7 +28,9 @@ class BeepChannel(BaseChannel):
         :param length: Length in milliseconds.
         """
         # TODO: Use self.cmd -> Fix tests
-        subprocess.run(["beep", "-f", str(float(frequency)), "-l", str(float(length))])
+        subprocess.run(
+            ["beep", "-f", str(float(frequency)), "-l", str(float(length))], check=False
+        )
 
     def report(self, message: Message) -> None:
         """Send a beep sounds.
