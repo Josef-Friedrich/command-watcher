@@ -60,8 +60,10 @@ class TestClassCommandExecutor:
             command = [
                 sys.executable,
                 "-c",
-                ("import os, sys; print(os.environ['TEST_STDOUT']); "
-                "print(os.environ['TEST_STDERR'], file=sys.stderr)"),
+                (
+                    "import os, sys; print(os.environ['TEST_STDOUT']); "
+                    "print(os.environ['TEST_STDERR'], file=sys.stderr)"
+                ),
             ]
             env = {
                 **os.environ,
@@ -185,16 +187,24 @@ class TestClassWatch:
         watch.run(["ls", "-la"])
         assert len(watch.processes) == 3
 
-    @pytest.mark.skip
     def test_method_report_channel_email(self) -> None:
-        watch = Watch(config_file=CONF, service_name="my_service")
+        email = command_watcher.EmailChannel(
+            smtp_server="smtp.example.com:587",
+            smtp_login="Login",
+            smtp_password="Password",
+            to_addr="to@example.com",
+            from_addr="from@example.com",
+            to_addr_critical="critical@example.com",
+        )
+        watch = Watch(
+            config_file=CONF,
+            service_name="my_service",
+            report_channels=[email],
+        )
         watch.log.info("info")
         watch.run("ls")
 
-        with (
-            mock.patch("command_watcher.report.send_service_check_result"),
-            mock.patch("smtplib.SMTP") as SMTP,
-        ):
+        with mock.patch("command_watcher.channels.email.SMTP") as SMTP:
             watch.report(
                 status=0,
                 custom_message="My message",
@@ -202,7 +212,7 @@ class TestClassWatch:
                 prefix="",
             )
 
-        SMTP.assert_called_with("smtp.example.com:587")
+        SMTP.assert_called_once_with("smtp.example.com:587")
         server = SMTP.return_value
         server.login.assert_called_with("Login", "Password")
         call_args = server.sendmail.call_args[0]
@@ -210,41 +220,53 @@ class TestClassWatch:
         assert call_args[1] == ["to@example.com"]
         assert "From: from@example.com\nTo: to@example.com\n" in call_args[2]
 
-    @pytest.mark.skip
     def test_method_report_channel_email_critical(self) -> None:
-        watch = Watch(config_file=CONF, service_name="my_service")
-        with (
-            mock.patch("command_watcher.channels.icinga.IcingaChannel"),
-            mock.patch("command_watcher.channels.email.SMTP") as SMTP,
-        ):
+        email = command_watcher.EmailChannel(
+            smtp_server="smtp.example.com:587",
+            smtp_login="Login",
+            smtp_password="Password",
+            to_addr="to@example.com",
+            from_addr="from@example.com",
+            to_addr_critical="critical@example.com",
+        )
+        watch = Watch(
+            config_file=CONF,
+            service_name="my_service",
+            report_channels=[email],
+        )
+        with mock.patch("command_watcher.channels.email.SMTP") as SMTP:
             watch.report(status=2)
+        SMTP.assert_called_once_with("smtp.example.com:587")
         server = SMTP.return_value
         call_args = server.sendmail.call_args[0]
         assert call_args[1] == ["critical@example.com"]
         assert "From: from@example.com\nTo: critical@example.com\n" in call_args[2]
 
-    @pytest.mark.skip
-    def test_method_report_channel_nsca(self) -> None:
-        watch = Watch(config_file=CONF, service_name="my_service")
-        with (
-            mock.patch(
-                "command_watcher.channels.icinga.Client"
-            ) as send_service_check_result,
-            mock.patch("command_watcher.channels.email.SMTP"),
-        ):
-            watch.report(
-                status=0,
-                custom_message="My message",
-                performance_data={"perf_1": 1, "perf_2": "test"},
-                prefix="",
+    def test_method_report_channel_icinga(self) -> None:
+        config = command_watcher.load_config(CONF).icinga
+        assert config is not None
+        with mock.patch("command_watcher.channels.icinga.Client") as Client:
+            icinga = command_watcher.IcingaChannel(
+                service_name="my_service", config=config
             )
-        send_service_check_result.assert_called_with(
+        watch = Watch(
+            config_file=CONF,
+            service_name="my_service",
+            report_channels=[icinga],
+        )
+        watch.report(
+            status=0,
+            custom_message="My message",
+            performance_data={"perf_1": 1, "perf_2": "test"},
+            prefix="",
+        )
+        Client.return_value.send_service_check_result.assert_called_with(
             service="my_service",
             host=HOSTNAME,
             exit_status=0,
             plugin_output="MY_SERVICE OK - My message",
             performance_data="perf_1=1 perf_2=test",
-            service_display_name=None,
+            display_name=None,
         )
 
         records = watch._log_handler.all_records  # type: ignore

@@ -1,16 +1,22 @@
-import pytest
-
 from command_watcher import Watch
-from tests.helper import DIR_FILES
+from tests.helper import CONF, DIR_FILES
 
 
 class TestIntegration:
-    @pytest.mark.skip
-    def test_download(self) -> None:
-        watch = Watch(config_file="/etc/command-watcher.yml", service_name="log_stderr")
+    def test_run_stderr_script_and_report_critical(self) -> None:
+        watch = Watch(
+            config_file=CONF,
+            service_name="log_stderr",
+            report_channels=[],
+        )
 
         script = DIR_FILES / "stderr.sh"
 
-        watch.run(str(script))
+        process = watch.run(str(script), ignore_exceptions=[1])
 
-        watch.final_report(status=2)
+        assert process.subprocess.returncode == 1
+        assert process.stderr == "One line to stderr!"
+
+        message = watch.final_report(status=2)
+        assert message.status == 2
+        assert message.status_text == "CRITICAL"

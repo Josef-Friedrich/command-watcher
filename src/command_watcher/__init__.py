@@ -327,7 +327,7 @@ class Watch:
                 self.log.debug(beep_reporter)
 
         else:
-            reporter.channels = []
+            reporter.channels = list(report_channels)
 
         self.processes = []
 

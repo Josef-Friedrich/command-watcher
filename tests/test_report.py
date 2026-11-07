@@ -1,12 +1,12 @@
+from email import message_from_string
 from typing import Any
 from unittest import mock
-
-import pytest
 
 import command_watcher
 from command_watcher import Message
 from command_watcher.report import Status
 from command_watcher.utils import HOSTNAME, USERNAME
+from tests.helper import CONF
 
 
 class TestClassMessage:
@@ -107,69 +107,79 @@ class TestClassEmailChannel:
             "from_addr: 'from@example.com'"
         )
 
-    @pytest.mark.skip
     def test_method_report(self) -> None:
         message = Message(status=0, service_name="test", body="body")
-        with mock.patch("command_watcher.report.send_email") as send_email:
+        with mock.patch("command_watcher.channels.email.SMTP") as smtp:
             self.email.report(message)
-        send_email.assert_called_with(
-            body=f"Host: {HOSTNAME}\nUser: {USERNAME}\nService name: test\n\nbody",
-            from_addr="from@example.com",
-            smtp_login="jf",
-            smtp_password="123",
-            smtp_server="mail.example.com:587",
-            subject="[cwatcher]: TEST OK",
-            to_addr="logs@example.com",
-        )
+        self.assert_email_sent(smtp, "logs@example.com", "# TEST OK")
 
-    @pytest.mark.skip
     def test_method_report_critical(self) -> None:
         message = Message(status=2, service_name="test", body="body")
-        with mock.patch("command_watcher.report.send_email") as send_email:
+        with mock.patch("command_watcher.channels.email.SMTP") as smtp:
             self.email.report(message)
-        send_email.assert_called_with(
-            body=f"Host: {HOSTNAME}\nUser: {USERNAME}\nService name: test\n\nbody",
-            from_addr="from@example.com",
-            smtp_login="jf",
-            smtp_password="123",
-            smtp_server="mail.example.com:587",
-            subject="[cwatcher]: TEST CRITICAL",
-            to_addr="critical@example.com",
+        self.assert_email_sent(smtp, "critical@example.com", "# TEST CRITICAL")
+
+    def assert_email_sent(self, smtp: mock.Mock, to_addr: str, subject: str) -> None:
+        smtp.assert_called_once_with("mail.example.com:587")
+        server = smtp.return_value
+        server.starttls.assert_called_once_with()
+        server.login.assert_called_once_with("jf", "123")
+        server.quit.assert_called_once_with()
+
+        from_addr, recipients, raw_message = server.sendmail.call_args.args
+        assert from_addr == "from@example.com"
+        assert recipients == [to_addr]
+
+        message = message_from_string(raw_message)
+        assert message["Subject"] == subject
+        assert message["From"] == "from@example.com"
+        assert message["To"] == to_addr
+        assert message.get_payload(decode=True).decode() == (
+            f"Host: {HOSTNAME}\nUser: {USERNAME}\nService name: test\n\nbody"
         )
 
 
-@pytest.mark.skip
 class TestClassIcingaChannel:
     icinga: command_watcher.IcingaChannel
 
     def setup_method(self) -> None:
-        self.icinga = command_watcher.IcingaChannel(service_name="Service")  # type: ignore
+        config = command_watcher.load_config(CONF).icinga
+        assert config is not None
+        with mock.patch("command_watcher.channels.icinga.Client") as client:
+            self.icinga = command_watcher.IcingaChannel(
+                service_name="Service", config=config
+            )
+        self.client = client.return_value
 
     def assert_called_with(
-        self, mock: mock.Mock, status: int, text_output: str, performance_data: str
+        self,
+        icinga_client: mock.Mock,
+        status: int,
+        text_output: str,
+        performance_data: str,
+        service_display_name: str | None = None,
     ) -> None:
-        mock.assert_called_with(
+        icinga_client.send_service_check_result.assert_called_with(
             service="my_service",
             host=HOSTNAME,
             exit_status=status,
             plugin_output=text_output,
             performance_data=performance_data,
-            service_display_name=None,
+            display_name=service_display_name,
         )
 
-    def send_passive_check(self, **kwargs: Any) -> mock.MagicMock | mock.AsyncMock:
+    def send_passive_check(self, **kwargs: Any) -> mock.Mock:
         message = Message(service_name="my_service", prefix="", **kwargs)
-        with mock.patch(
-            "command_watcher.report.send_service_check_result"
-        ) as send_service_check_result:
-            self.icinga.report(message)
-        return send_service_check_result
+        self.icinga.report(message)
+        return self.client
 
     def test_property_service_name(self) -> None:
         assert self.icinga.service_name == "Service"
 
     def test_magic_method_str(self) -> None:
-        assert str(self.icinga) == "external configured icinga2 api client"
+        assert str(self.icinga).startswith(
+            "[IcingaChannel] api_endpoint_host: 'example.com'"
+        )
 
     def test_method_send_passive_check(self) -> None:
         send_passive_check = self.send_passive_check(
@@ -185,10 +195,15 @@ class TestClassIcingaChannel:
         send_passive_check = self.send_passive_check(
             status=3,
             custom_message="text",
+            service_display_name="Displayed service",
             performance_data={"perf_1": 1, "perf_2": "lol"},
         )
         self.assert_called_with(
-            send_passive_check, 3, "MY_SERVICE UNKNOWN - text", "perf_1=1 perf_2=lol"
+            send_passive_check,
+            3,
+            "MY_SERVICE UNKNOWN - text",
+            "perf_1=1 perf_2=lol",
+            "Displayed service",
         )
 
     def test_method_send_passive_check_without_custom_output(self) -> None:
