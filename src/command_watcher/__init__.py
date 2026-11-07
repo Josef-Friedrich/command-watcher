@@ -21,9 +21,8 @@ from typing import (
     Tuple,
     TypedDict,
     Union,
+    Unpack,
 )
-
-from typing_extensions import Unpack
 
 from command_watcher.channels.base_channel import BaseChannel
 from command_watcher.channels.beep import BeepChannel
@@ -84,7 +83,7 @@ class Timer:
         :return: A formatted string displaying the result."""
         self.stop = time.time()
         self.interval = self.stop - self.start
-        return "{:.3f}s".format(self.interval)
+        return f"{self.interval:.3f}s"
 
 
 # Main code ###################################################################
@@ -123,7 +122,7 @@ class CommandExecutor:
     args: Args
     """Process arguments in various types."""
 
-    _queue: "queue.Queue[Optional[Tuple[bytes, Stream]]]"
+    _queue: queue.Queue[tuple[bytes, Stream] | None]
 
     log: ExtendedLogger
     """A ready to go and configured logger."""
@@ -135,7 +134,7 @@ class CommandExecutor:
     def __init__(
         self,
         args: Args,
-        master_logger: Optional[ExtendedLogger] = None,
+        master_logger: ExtendedLogger | None = None,
         **kwargs: Unpack[ProcessArgs],
     ) -> None:
         # self.args: typing.Union[str, list, tuple] = args
@@ -222,7 +221,7 @@ class CommandExecutor:
         finally:
             self._queue.put(None)
 
-    def _start_thread(self, pipe: Optional[IO[bytes]], stream: Stream) -> None:
+    def _start_thread(self, pipe: IO[bytes] | None, stream: Stream) -> None:
         """
         :param object pipe: ``process.stdout`` or ``process.stdout``
         """
@@ -249,7 +248,7 @@ class Watch:
     _service_name: str
     """A name of the watched service."""
 
-    _service_display_name: Optional[str]
+    _service_display_name: str | None
     """A human readable form of the *service name*."""
 
     log: ExtendedLogger
@@ -262,7 +261,7 @@ class Watch:
     :py:class:`Process`. Everytime you use the method
     `run()` the process object is appened in the list."""
 
-    _config: Optional[Config]
+    _config: Config | None
 
     _raise_exceptions: bool
     """Raise exceptions"""
@@ -271,12 +270,12 @@ class Watch:
 
     def __init__(
         self,
-        config_file: Optional[Union[str, Path]] = None,
+        config_file: str | Path | None = None,
         service_name: str = "command_watcher",
-        service_display_name: Optional[str] = None,
+        service_display_name: str | None = None,
         raise_exceptions: bool = True,
-        config: Optional[Config] = None,
-        report_channels: Optional[list[BaseChannel]] = None,
+        config: Config | None = None,
+        report_channels: list[BaseChannel] | None = None,
     ) -> None:
         self._hostname = HOSTNAME
 
@@ -352,7 +351,7 @@ class Watch:
         self,
         args: Args,
         log: bool = True,
-        ignore_exceptions: list[int] = [],
+        ignore_exceptions: list[int] | None = None,
         **kwargs: Unpack[ProcessArgs],
     ) -> CommandExecutor:
         """
@@ -366,6 +365,8 @@ class Watch:
         :param ignore_exceptions: A list of none-zero exit codes, which is
             ignored by this method.
         """
+        if ignore_exceptions is None:
+            ignore_exceptions = []
         if log:
             master_logger = self.log
         else:
@@ -406,6 +407,5 @@ class Watch:
         if "performance_data" not in data_dict:
             data_dict["performance_data"] = {}
         data_dict["performance_data"]["execution_time"] = timer_result
-        if "status" in data_dict:
-            del data_dict["status"]
+        data_dict.pop("status", None)
         return self.report(status=status, **data_dict)

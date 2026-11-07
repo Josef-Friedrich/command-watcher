@@ -1,6 +1,5 @@
 import shutil
 import subprocess
-from typing import Union
 
 from command_watcher.channels.base_channel import BaseChannel
 from command_watcher.message import Message
@@ -9,7 +8,7 @@ from command_watcher.message import Message
 class BeepChannel(BaseChannel):
     """Send beep sounds."""
 
-    cmd: Union[str, None]
+    cmd: str | None
 
     def __init__(self) -> None:
         self.cmd = shutil.which("beep")

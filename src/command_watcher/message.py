@@ -2,9 +2,7 @@ import os
 import pwd
 import socket
 import textwrap
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, TypedDict
-
-from typing_extensions import Unpack
+from typing import TYPE_CHECKING, Any, Literal, TypedDict, Unpack
 
 if TYPE_CHECKING:
     from . import CommandExecutor
@@ -25,7 +23,7 @@ class MinimalMessageParams(TypedDict, total=False):
     body: str
     """ A longer report text."""
 
-    performance_data: Dict[str, Any]
+    performance_data: dict[str, Any]
     """ A dictionary like
           `{'perf_1': 1, 'perf_2': 'test'}`"""
 
@@ -44,14 +42,16 @@ class MessageParams(MinimalMessageParams, total=False):
     log_records: str
     """Log records separated by new lines"""
 
-    processes: List["CommandExecutor"]
+    processes: list["CommandExecutor"]
 
 
 class BaseClass:
-    def _obj_to_str(self, attributes: List[str] = []) -> str:
+    def _obj_to_str(self, attributes: list[str] | None = None) -> str:
+        if attributes is None:
+            attributes = []
         if not attributes:
             attributes = dir(self)
-        output: List[str] = []
+        output: list[str] = []
         for attribute in attributes:
             if not attribute.startswith("_") and not callable(getattr(self, attribute)):
                 value = getattr(self, attribute)
@@ -109,11 +109,11 @@ class Message(BaseClass):
         """
         performance_data = self._data.get("performance_data")
         if performance_data:
-            pairs: List[str] = []
+            pairs: list[str] = []
             key: str
             value: Any
             for key, value in performance_data.items():
-                pairs.append("{!s}={!s}".format(key, value))
+                pairs.append(f"{key!s}={value!s}")
             return " ".join(pairs)
         return ""
 
@@ -135,7 +135,7 @@ class Message(BaseClass):
         output.append(self.service_name.upper())
         output.append(self.status_text)
         if self.custom_message:
-            output.append("- {}".format(self.custom_message))
+            output.append(f"- {self.custom_message}")
         return " ".join(output)
 
     @property
@@ -146,13 +146,13 @@ class Message(BaseClass):
             output.append(self.service_name.upper())
         output.append(self.status_text)
         if self.custom_message:
-            output.append("- {}".format(self.custom_message))
+            output.append(f"- {self.custom_message}")
         return " ".join(output)
 
     @property
     def message_monitoring(self) -> str:
         """plugin_output + performance_data"""
-        output: List[str] = []
+        output: list[str] = []
         output.append(self.plugin_output)
         if self.performance_data:
             output.append("|")
@@ -162,7 +162,7 @@ class Message(BaseClass):
     @property
     def body(self) -> str:
         """Text body for the e-mail message."""
-        output: List[str] = []
+        output: list[str] = []
         output.append(f"Host: {HOSTNAME}")
         output.append(f"User: {USERNAME}")
         output.append(f"Service name: {self.service_name}")
@@ -185,8 +185,8 @@ class Message(BaseClass):
         return "\n".join(output)
 
     @property
-    def processes(self) -> Optional[str]:
-        output: List[str] = []
+    def processes(self) -> str | None:
+        output: list[str] = []
         processes = self._data.get("processes")
         if processes:
             for process in processes:
@@ -197,4 +197,4 @@ class Message(BaseClass):
 
     @property
     def user(self) -> str:
-        return "[user:{}]".format(USERNAME)
+        return f"[user:{USERNAME}]"

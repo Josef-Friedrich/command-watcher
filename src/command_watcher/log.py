@@ -3,7 +3,7 @@ import sys
 import time
 import uuid
 from logging.handlers import BufferingHandler
-from typing import Any, Optional, cast
+from typing import Any, cast
 
 import termcolor
 
@@ -29,9 +29,9 @@ DATEFMT = "%Y%m%d_%H%M%S"
 class LoggingHandler(BufferingHandler):
     """Store of all logging records in the memory. Print all records on emit."""
 
-    _master_logger: Optional[logging.Logger]
+    _master_logger: logging.Logger | None
 
-    def __init__(self, master_logger: Optional[logging.Logger] = None):
+    def __init__(self, master_logger: logging.Logger | None = None):
         BufferingHandler.__init__(self, capacity=1000000)
         self._master_logger = master_logger
 
@@ -84,15 +84,12 @@ class LoggingHandler(BufferingHandler):
         else:
             stream = sys.stdout
 
-        created = "{}_{:03d}".format(
-            time.strftime(DATEFMT, time.localtime(record.created)),
-            int(record.msecs),
-        )
+        created = f"{time.strftime(DATEFMT, time.localtime(record.created))}_{int(record.msecs):03d}"
 
         print(
             "{} {} {}".format(
                 created,
-                termcolor.colored(" {:<8} ".format(level), color, attrs=reverse),
+                termcolor.colored(f" {level:<8} ", color, attrs=reverse),
                 termcolor.colored(record.msg, color, attrs=normal),
             ),
             file=stream,
@@ -161,7 +158,7 @@ logging.Logger.stderr = _log_stderr  # type: ignore
 
 
 def setup_logging(
-    master_logger: Optional[logging.Logger] = None,
+    master_logger: logging.Logger | None = None,
 ) -> tuple[ExtendedLogger, LoggingHandler]:
     """Setup a fresh logger for each watch action.
 

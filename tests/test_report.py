@@ -113,9 +113,7 @@ class TestClassEmailChannel:
         with mock.patch("command_watcher.report.send_email") as send_email:
             self.email.report(message)
         send_email.assert_called_with(
-            body="Host: {}\nUser: {}\nService name: test\n\nbody".format(
-                HOSTNAME, USERNAME
-            ),
+            body=f"Host: {HOSTNAME}\nUser: {USERNAME}\nService name: test\n\nbody",
             from_addr="from@example.com",
             smtp_login="jf",
             smtp_password="123",
@@ -130,9 +128,7 @@ class TestClassEmailChannel:
         with mock.patch("command_watcher.report.send_email") as send_email:
             self.email.report(message)
         send_email.assert_called_with(
-            body="Host: {}\nUser: {}\nService name: test\n\nbody".format(
-                HOSTNAME, USERNAME
-            ),
+            body=f"Host: {HOSTNAME}\nUser: {USERNAME}\nService name: test\n\nbody",
             from_addr="from@example.com",
             smtp_login="jf",
             smtp_password="123",

@@ -211,7 +211,7 @@ class TestClassWatch:
         assert "performance_data: 'perf_1=1 perf_2=test'" in records
         assert "service_name: 'my_service'," in records
         assert "status_text: 'OK'," in records
-        assert "user: '[user:{}]'".format(USERNAME) in records
+        assert f"user: '[user:{USERNAME}]'" in records
 
     def test_exception(self) -> None:
         watch = Watch(config_file=CONF, service_name="test", report_channels=[])

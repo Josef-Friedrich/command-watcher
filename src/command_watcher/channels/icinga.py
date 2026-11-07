@@ -1,5 +1,3 @@
-from typing import Optional
-
 from pretiac.client import Client
 from pretiac.config import Config
 
@@ -11,22 +9,22 @@ from command_watcher.utils import HOSTNAME
 class IcingaChannel(BaseChannel):
     service_name: str
 
-    service_display_name: Optional[str]
+    service_display_name: str | None
 
     __client: Client
 
-    api_endpoint_host: Optional[str]
-    api_endpoint_port: Optional[int]
-    http_basic_username: Optional[str]
-    client_certificate: Optional[str]
-    client_private_key: Optional[str]
-    ca_certificate: Optional[str]
+    api_endpoint_host: str | None
+    api_endpoint_port: int | None
+    http_basic_username: str | None
+    client_certificate: str | None
+    client_private_key: str | None
+    ca_certificate: str | None
 
     def __init__(
         self,
         service_name: str,
         config: Config,
-        service_display_name: Optional[str] = None,
+        service_display_name: str | None = None,
     ) -> None:
         self.service_name = service_name
         self.service_display_name = service_display_name

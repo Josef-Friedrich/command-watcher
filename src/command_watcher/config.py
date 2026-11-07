@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Optional, Union
 
 import yaml
 from pretiac.config import Config as IcingaConfig
@@ -36,17 +35,17 @@ class BeepConfig:
 
 @dataclass
 class Config:
-    email: Optional[EmailConfig] = None
+    email: EmailConfig | None = None
 
-    icinga: Optional[IcingaConfig] = None
+    icinga: IcingaConfig | None = None
 
-    beep: Optional[BeepConfig] = None
-
-
-_config: Optional[Config] = None
+    beep: BeepConfig | None = None
 
 
-def load_config(config_file: Optional[Union[str, Path]] = None) -> Config:
+_config: Config | None = None
+
+
+def load_config(config_file: str | Path | None = None) -> Config:
     if config_file is None:
         config_file = "/etc/command-watcher.yml"
     global _config
