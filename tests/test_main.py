@@ -1,4 +1,6 @@
+import logging
 import os
+import sys
 from typing import Any
 from unittest import mock
 
@@ -42,6 +44,51 @@ class TestClassCommandExecutor:
         process = CommandExecutor(self.cmd_stderr)
         assert process.line_count_stdout == 0
         assert process.line_count_stderr == 1
+
+    @pytest.mark.parametrize("mode", ["direct", "watch", "watch_no_log"])
+    def test_output_is_not_duplicated_by_root_handlers(
+        self, mode: str, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        root = logging.getLogger()
+        handlers = [
+            logging.StreamHandler(sys.stderr),
+            logging.StreamHandler(sys.stderr),
+        ]
+        for handler in handlers:
+            root.addHandler(handler)
+        try:
+            command = [
+                sys.executable,
+                "-c",
+                ("import os, sys; print(os.environ['TEST_STDOUT']); "
+                "print(os.environ['TEST_STDERR'], file=sys.stderr)"),
+            ]
+            env = {
+                **os.environ,
+                "TEST_STDOUT": "unique stdout",
+                "TEST_STDERR": "unique stderr",
+            }
+            watch = None
+            if mode == "direct":
+                process = CommandExecutor(command, env=env)
+            else:
+                watch = Watch(config_file=CONF, service_name="test")
+                process = watch.run(command, log=mode == "watch", env=env)
+
+            captured = capsys.readouterr()
+            assert captured.out.count("unique stdout") == 1
+            assert captured.err.count("unique stderr") == 1
+            assert "unique stderr" not in captured.out
+            assert "unique stdout" not in captured.err
+            assert process.stdout == "unique stdout"
+            assert process.stderr == "unique stderr"
+            if watch is not None:
+                assert watch.stdout == ("unique stdout" if mode == "watch" else "")
+                assert watch.stderr == ("unique stderr" if mode == "watch" else "")
+        finally:
+            for handler in handlers:
+                root.removeHandler(handler)
+                handler.close()
 
 
 class TestClassWatch:

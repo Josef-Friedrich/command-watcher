@@ -220,16 +220,24 @@ class TestClassBeepChannel:
 
     def test_status_ok(self) -> None:
         subprocess_run = self.report(0)
-        subprocess_run.assert_called_with(["beep", "-f", "4186.01", "-l", "50.0"])
+        subprocess_run.assert_called_with(
+            ["beep", "-f", "4186.01", "-l", "50.0"], check=False
+        )
 
     def test_status_warning(self) -> None:
         subprocess_run = self.report(1)
-        subprocess_run.assert_called_with(["beep", "-f", "261.626", "-l", "100.0"])
+        subprocess_run.assert_called_with(
+            ["beep", "-f", "261.626", "-l", "100.0"], check=False
+        )
 
     def test_status_critical(self) -> None:
         subprocess_run = self.report(2)
-        subprocess_run.assert_called_with(["beep", "-f", "65.4064", "-l", "150.0"])
+        subprocess_run.assert_called_with(
+            ["beep", "-f", "65.4064", "-l", "150.0"], check=False
+        )
 
     def test_status_unkown(self) -> None:
         subprocess_run = self.report(3)
-        subprocess_run.assert_called_with(["beep", "-f", "32.7032", "-l", "200.0"])
+        subprocess_run.assert_called_with(
+            ["beep", "-f", "32.7032", "-l", "200.0"], check=False
+        )

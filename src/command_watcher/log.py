@@ -175,4 +175,5 @@ def setup_logging(
     # the root logger is created with level WARNING.
     logger.setLevel(1)
     logger.addHandler(handler)
+    logger.propagate = False
     return (cast(ExtendedLogger, logger), handler)

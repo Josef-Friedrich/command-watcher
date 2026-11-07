@@ -12,6 +12,10 @@ command_watcher
 Module to watch the execution of shell scripts. Both streams (`stdout`
 and `stderr`) are captured.
 
+The watcher's loggers print each message once and do not propagate it to
+Python's root logger. Command output is also stored on the command executor
+and, unless ``log=False`` is passed to ``watch.run()``, on the watcher.
+
 .. code:: python
 
     watch = Watch()
