@@ -1,6 +1,10 @@
 # Run all recipes
 all: upgrade test format docs lint type_check
 
+# Run scripts in the folder examples
+examples:
+	uv run examples/watch.py
+
 # Execute the tests
 test:
 	uv run --isolated --python=3.12 pytest -m "not (slow or gui)"
