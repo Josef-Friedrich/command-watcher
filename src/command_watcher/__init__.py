@@ -60,10 +60,10 @@ class Timer:
     """Measure the execution time of a command run."""
 
     stop: float
-    """"The time when the timer stops. (UNIX timestamp)"""
+    """The time when the timer stops. (UNIX timestamp)"""
 
     start: float
-    """"The start time. (UNIX timestamp)"""
+    """The start time. (UNIX timestamp)"""
 
     interval: float
     """The time interval between start and stop."""
