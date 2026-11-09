@@ -1,3 +1,4 @@
+import io
 import logging
 import os
 import sys
@@ -150,8 +151,8 @@ class TestClassWatch:
         watch = Watch(config_file=CONF, service_name="test")
         with mock.patch("subprocess.Popen") as Popen:
             process = Popen.return_value
-            process.stdout = b""
-            process.stderr = b""
+            process.stdout = io.BytesIO()
+            process.stderr = io.BytesIO()
             process.returncode = 0
             watch.run("ls", cwd="/")
         Popen.assert_called_with(["ls"], cwd="/", stderr=-1, stdout=-1)

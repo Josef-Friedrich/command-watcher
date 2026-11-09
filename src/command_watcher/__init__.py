@@ -18,7 +18,6 @@ from typing import (
     Any,
     Literal,
     TypedDict,
-    Union,
     Unpack,
 )
 
@@ -86,10 +85,10 @@ class Timer:
 
 # Main code ###################################################################
 
-Arg = Union[str, Path]
+Arg = str | Path
 """Command line argument"""
 
-Args = Union[Arg, list[Arg], tuple[Arg]]
+Args = Arg | list[Arg] | tuple[Arg]
 """Command line arguments"""
 
 
@@ -214,8 +213,6 @@ class CommandExecutor:
             with pipe:
                 for line in iter(pipe.readline, b""):
                     self._queue.put((line, stream))
-        except Exception:
-            pass
         finally:
             self._queue.put(None)
 
