@@ -63,4 +63,4 @@ lint:
 
 # Perform type checking using mypy
 type_check:
-	uv run mypy typings src/command_watcher tests
+	uv run mypy src/command_watcher tests

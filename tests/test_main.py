@@ -2,6 +2,7 @@ import io
 import logging
 import os
 import sys
+from pathlib import Path
 from typing import Any
 from unittest import mock
 
@@ -58,7 +59,7 @@ class TestClassCommandExecutor:
         for handler in handlers:
             root.addHandler(handler)
         try:
-            command = [
+            command: list[str | Path] = [
                 sys.executable,
                 "-c",
                 (

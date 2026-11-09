@@ -30,6 +30,7 @@ Repository = "https://github.com/Josef-Friedrich/command-watcher"
 
 [dependency-groups]
 dev = [
+    "mypy>=1.0",
     "pytest>=9.0.2",
     "stdout-stderr-capturing>=0.2.1",
 ]

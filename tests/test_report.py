@@ -134,7 +134,9 @@ class TestClassEmailChannel:
         assert message["Subject"] == subject
         assert message["From"] == "from@example.com"
         assert message["To"] == to_addr
-        assert message.get_payload(decode=True).decode() == (
+        payload = message.get_payload(decode=True)
+        assert isinstance(payload, bytes)
+        assert payload.decode() == (
             f"Host: {HOSTNAME}\nUser: {USERNAME}\nService name: test\n\nbody"
         )
 
